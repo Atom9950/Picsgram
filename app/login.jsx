@@ -8,19 +8,38 @@ import {theme} from '../constants/theme'
 import Input from '../components/Input'
 import Icon from '@/assets/icons'
 import Button from '../components/Button';
+import { supabase } from '../lib/supabase'
 
 const Login = () => {
   const router = useRouter();
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   const onSubmit = async() => {
     if(!emailRef.current || !passwordRef.current){
       Alert.alert("Error", "Email and Password are required");
       return;
     }
-    //good to go
+
+    let email = emailRef.current.trim();
+    let password = passwordRef.current.trim();
+    setLoading(true);
+
+    const {error} = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    setLoading(false);
+
+    console.log('error: ', error);
+
+    if(error){
+      Alert.alert("Error", error.message);
+    }
   };
+
   return (
     <ScreenWrapper bg={"white"}>
       <StatusBar style= "dark"/>
@@ -44,8 +63,13 @@ const Login = () => {
           <Input
             icon={<Icon name='lock' size={26} strokeWidth={1.6}/>}
             placeholder="Enter your password"
-            secureTextEntry
+            secureTextEntry={!passwordVisible}
             onChangeText={value => passwordRef.current = value}
+            showPasswordToggle={true}
+            passwordVisible={passwordVisible}
+            onTogglePassword={() => setPasswordVisible(!passwordVisible)}
+            eyeIcon={<Icon name='eye' size={26} strokeWidth={1.6}/>}
+            eyeOffIcon={<Icon name='eyeOff' size={26} strokeWidth={1.6}/>}
           />
           <Text style={styles.forgotPassword}> Forgotten password?</Text>
           {/* button */}

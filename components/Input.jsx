@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { StyleSheet, Text, TextInput, View, Pressable } from 'react-native'
 import React from 'react'
 import { theme } from '../constants/theme'
 import { hp } from '../helpers/common'
@@ -15,6 +15,13 @@ const Input = (props) => {
         ref={props.inputRef && props.inputRef}
         {...props}
       />
+      {
+        props.showPasswordToggle && (
+          <Pressable onPress={props.onTogglePassword}>
+            {props.passwordVisible ? props.eyeIcon : props.eyeOffIcon}
+          </Pressable>
+        )
+      }
     </View>
   )
 }

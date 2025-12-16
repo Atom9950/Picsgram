@@ -8,6 +8,7 @@ import {theme} from '../constants/theme'
 import Input from '../components/Input'
 import Icon from '@/assets/icons'
 import Button from '../components/Button';
+import { supabase } from '../lib/supabase'
 
 const SignUp = () => {
   const router = useRouter();
@@ -15,13 +16,38 @@ const SignUp = () => {
   const nameRef = useRef("");
   const passwordRef = useRef("");
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   const onSubmit = async() => {
     if(!nameRef.current || !emailRef.current || !passwordRef.current){
       Alert.alert("Error", "All the fields are required");
       return;
     }
-    //good to go
+
+    let name = nameRef.current.trim();
+    let email = emailRef.current.trim();
+    let password = passwordRef.current.trim();
+    setLoading(true);
+
+    const {data: {session}, error} = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name,
+        }
+      }
+    });
+    setLoading(false);
+
+    // console.log('session: ', session);
+    // console.log('error: ', error);
+
+    if(error){
+      Alert.alert("Error", error.message);
+    }
   };
+
   return (
     <ScreenWrapper bg={"white"}>
       <StatusBar style= "dark"/>
@@ -50,8 +76,13 @@ const SignUp = () => {
           <Input
             icon={<Icon name='lock' size={26} strokeWidth={1.6}/>}
             placeholder="Enter your password"
-            secureTextEntry
+            secureTextEntry={!passwordVisible}
             onChangeText={value => passwordRef.current = value}
+            showPasswordToggle={true}
+            passwordVisible={passwordVisible}
+            onTogglePassword={() => setPasswordVisible(!passwordVisible)}
+            eyeIcon={<Icon name='eye' size={26} strokeWidth={1.6}/>}
+            eyeOffIcon={<Icon name='eyeOff' size={26} strokeWidth={1.6}/>}
           />
           {/* button */}
           <Button title={"SignUp"} loading={loading} onPress={onSubmit}/>

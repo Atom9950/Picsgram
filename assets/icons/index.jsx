@@ -22,6 +22,8 @@ import Delete from './Delete';
 import Logout from './logout';
 import Image from './Image';
 import Video from './Video';
+import Eye from './Eye';
+import EyeOff from './EyeOff';
 
 const icons = {
     home: Home,
@@ -45,6 +47,8 @@ const icons = {
     logout: Logout,
     image: Image,
     video: Video,
+    eye: Eye,
+    eyeOff: EyeOff,
 }
 
 const Icon = ({name, ...props}) => {
