@@ -97,7 +97,7 @@ const UserHeader = ({user, router, handleLogout}) => {
                             user && user.bio && (
                                 
                                 <View style={styles.info}>
-                                    <Text style={styles.infoText}>{user && user.email}</Text>
+                                    <Text style={styles.infoText}>{user && user.bio}</Text>
                                 </View>
                             )
                         }
