@@ -24,7 +24,7 @@ const MainLayout = () => {
       if(session){
         //set auth
         setAuth(session?.user);
-        updatedUserData(session?.user)
+        updatedUserData(session?.user, session?.user.email)
         router.replace('/home');
       }else{
         //remove auth
@@ -34,9 +34,9 @@ const MainLayout = () => {
     })
   }, [])
 
-  const updatedUserData = async (user) => {
+  const updatedUserData = async (user, email) => {
     let res = await getUserData(user?.id);
-    if(res.success) setUserData(res.data);
+    if(res.success) setUserData({...res.data, email});
   }
   return (
     <Stack
