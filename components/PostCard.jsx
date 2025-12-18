@@ -1,7 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Alert, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { use, useEffect, useState } from 'react'
 import { theme } from '../constants/theme'
-import { hp, wp } from '../helpers/common'
+import { hp, stripHtmlTags, wp } from '../helpers/common'
 import Avatar from './Avatar'
 import moment from 'moment'
 import Icon from '@/assets/icons'
@@ -9,6 +9,10 @@ import RenderHtml from 'react-native-render-html';
 import { Image } from 'expo-image'
 import { getSupabaseFileUrl } from '../services/imageService'
 import { useVideoPlayer, VideoView } from 'expo-video'
+import { createPostLike, removePostLike } from '../services/postService'
+import * as FileSystem from 'expo-file-system/legacy';
+import * as Sharing from 'expo-sharing';
+import Loading from './Loading'
 
 const textStyles ={
     color: theme.colors.dark,
@@ -41,6 +45,13 @@ const PostCard = ({
         elevation: 1
     }
 
+    const [likes, setLikes] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+      setLikes(item?.postLikes);
+    },[])
+
     // Create video player for video posts
     const isVideo = item?.file && item.file.includes('postVideos');
     const videoSource = isVideo ? getSupabaseFileUrl(item?.file)?.uri : null;
@@ -52,12 +63,96 @@ const PostCard = ({
 
     const openPostDetails = () => {
       //later
+      router.push({pathname: 'postDetails', params: {postId: item?.id}})
+    }
+
+    // Like button functionality
+    const onLike = async() => {
+      if(liked){
+        // remove like
+         let updatedLikes = likes.filter(like => like.userId != currentUser?.id);
+        setLikes([...updatedLikes])
+        let res = await removePostLike(item?.id, currentUser?.id);
+        console.log('removed like: ', res);
+  
+        if(!res.success){
+          Alert.alert("Error", "Something went wrong!");
+        }
+
+      }else{
+        // create like
+        let data = {
+          userId: currentUser?.id,
+          postId: item?.id
+        }
+        setLikes([...likes, data])
+        let res = await createPostLike(data);
+        console.log('added like: ', res);
+  
+        if(!res.success){
+          Alert.alert("Error", "Something went wrong!");
+        }
+      }
+    }
+
+    const onShare = async () => {
+      if(item?.file){
+        // Get the file URL
+        const fileUrl = getSupabaseFileUrl(item?.file);
+        
+        // Check if URL exists before attempting download
+        if(fileUrl?.uri){
+          try {
+            // Create proper file path with extension
+            const fileName = item.file.split('/').pop();
+            const fileExtension = fileName.includes('.') ? '' : (item.file.includes('postImages') ? '.png' : '.mp4');
+            const localPath = `${FileSystem.documentDirectory}${fileName}${fileExtension}`;
+            
+            console.log('Downloading from:', fileUrl.uri);
+            console.log('Downloading to:', localPath);
+            
+            // Download the file
+            setLoading(true);
+            const downloadResult = await FileSystem.downloadAsync(
+              fileUrl.uri,
+              localPath
+            );
+            setLoading(false);
+            
+            console.log('Download result:', downloadResult);
+            
+            // Check if sharing is available
+            const isAvailable = await Sharing.isAvailableAsync();
+            
+            if (isAvailable) {
+              // Share the downloaded file
+              await Sharing.shareAsync(downloadResult.uri, {
+                dialogTitle: 'Share Post',
+                mimeType: item.file.includes('postImages') ? 'image/png' : 'video/mp4',
+              });
+            } else {
+              Alert.alert('Error', 'Sharing is not available on this device');
+            }
+            
+          } catch (error) {
+            console.log('Error sharing file:', error);
+            Alert.alert('Error', 'Failed to share the file');
+          }
+        } else {
+          console.log('File URL is null or undefined');
+          Alert.alert('Error', 'File not found');
+        }
+      } else {
+        // If there's no file, just share the text
+        let content = {message: stripHtmlTags(item?.body)};
+        Share.share(content);
+      }
     }
 
     const createdAt = moment(item.created_at).format('MMM D')
 
-    const likes =[]
-    const liked = false;
+    const liked = likes.filter(like => like.userId == currentUser.id)[0]? true: false;
+    // console.log('post item: ', item)
   return (
     <View style={[styles.container,hasShadow && shadowStyles]}>
       <View style={styles.header}>
@@ -119,7 +214,7 @@ const PostCard = ({
       {/* like comment and share */}
       <View style={styles.footer}>
         <View style={styles.actions}>
-          <TouchableOpacity style={styles.footerButton}>
+          <TouchableOpacity style={styles.footerButton} onPress={onLike}>
             <Icon name='heart' size={24} fill={liked? theme.colors.heart: 'transparent'} strokeWidth={2} color={liked? theme.colors.heart: theme.colors.textLight} />
             <Text style={styles.count}>
               {
@@ -130,7 +225,7 @@ const PostCard = ({
         </View>
 
         <View style={styles.actions}>
-          <TouchableOpacity style={styles.footerButton}>
+          <TouchableOpacity style={styles.footerButton} onPress={openPostDetails}>
             <Icon name='comment' size={24} strokeWidth={2} color={ theme.colors.textLight} />
             <Text style={styles.count}>
               {
@@ -141,9 +236,16 @@ const PostCard = ({
         </View>
 
         <View style={styles.actions}>
-          <TouchableOpacity style={styles.footerButton}>
+          {
+            loading? (
+              <Loading size='small'/>
+            ):(
+
+          <TouchableOpacity style={styles.footerButton} onPress={onShare}>
             <Icon name='share' size={24} strokeWidth={2} color={ theme.colors.textLight} />
           </TouchableOpacity>
+            )
+          }
         </View>
 
 
