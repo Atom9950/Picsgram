@@ -151,7 +151,7 @@ const PostCard = ({
 
     const createdAt = moment(item.created_at).format('MMM D')
 
-    const liked = likes.filter(like => like.userId == currentUser.id)[0]? true: false;
+    const liked = likes.filter(like => like.userId == currentUser?.id)[0]? true: false;
     // console.log('post item: ', item)
   return (
     <View style={[styles.container,hasShadow && shadowStyles]}>
