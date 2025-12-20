@@ -1,4 +1,4 @@
-import { Alert, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Alert, Platform, Pressable, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import Button from '../../components/Button'
@@ -24,36 +24,84 @@ const Home = () => {
 
     const [posts, setPosts] = useState([]);
     const [hasMore, setHasMore] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
     const handlePostEvent = async(payload) => {
       if(payload.eventType == "INSERT" && payload?.new?.id){
         let newPost = {...payload.new}
         let res = await getUserData(newPost.userId);
-        newPost.user =res.success? res.data: {};
+        newPost.user = res.success? res.data: {};
         setPosts(prevPosts=> [newPost,...prevPosts]);
       }
     }
 
-    useEffect(() => {
+    const handleCommentEvent = async(payload) => {
+      console.log('HOME - Comment event received:', payload);
+      console.log('HOME - Event type:', payload.eventType);
+      
+      if(payload.eventType == "INSERT" && payload?.new?.id){
+        const newComment = payload.new;
+        console.log('HOME - INSERT - Updating post with ID:', newComment.postId);
+        
+        setPosts(prevPosts => 
+          prevPosts.map(post => {
+            if(post.id === newComment.postId) {
+              const newCount = (post?.comments?.[0]?.count || 0) + 1;
+              console.log('HOME - Old count:', post?.comments?.[0]?.count, 'New count:', newCount);
+              return {
+                ...post,
+                comments: [{count: newCount}]
+              };
+            }
+            return post;
+          })
+        );
+      }
+      
+      if(payload.eventType == "DELETE" && payload?.old?.id){
+        const deletedComment = payload.old;
+        console.log('HOME - DELETE - Updating post with ID:', deletedComment.postId);
+        
+        setPosts(prevPosts => 
+          prevPosts.map(post => {
+            if(post.id === deletedComment.postId) {
+              const newCount = Math.max(0, (post?.comments?.[0]?.count || 0) - 1);
+              console.log('HOME - Old count:', post?.comments?.[0]?.count, 'New count:', newCount);
+              return {
+                ...post,
+                comments: [{count: newCount}]
+              };
+            }
+            return post;
+          })
+        );
+      }
+    }
 
+    useEffect(() => {
       let postChannel = supabase
-      .channel(`posts`)
-      .on('postgres_changes', {event: '*', schema: 'public', table: 'posts'}, handlePostEvent)
-      .subscribe();
-      // getPosts();
+        .channel('posts')
+        .on('postgres_changes', {event: '*', schema: 'public', table: 'posts'}, handlePostEvent)
+        .subscribe();
+
+      let commentChannel = supabase
+        .channel('comments')
+        .on('postgres_changes', {event: '*', schema: 'public', table: 'comments'}, handleCommentEvent)
+        .subscribe();
+
+      // Initial load
+      getPosts();
 
       return() => {
         supabase.removeChannel(postChannel);
+        supabase.removeChannel(commentChannel);
       }
     }, [])
 
     const getPosts = async() => {
-      //call the api here
-
       if(!hasMore) return null;
       limit = limit + 4;
 
-      // console.log('limit: ', limit);
       let res = await fetchPosts(limit);
       if(res.success){
         if(posts.length==res.data.length){
@@ -63,18 +111,14 @@ const Home = () => {
       }
     }
 
+    const onRefresh = async() => {
+      setRefreshing(true);
+      limit = 0;
+      setHasMore(true);
+      await getPosts();
+      setRefreshing(false);
+    }
 
-
-    // console.log('user data: ', user);
-
-    // const onLogout = async() => {
-    //     // setAuth(null);
-    //     const {error} = await supabase.auth.signOut();
-
-    //     if(error) {
-    //         Alert.alert('Error', error.message);
-    //     }
-    // }
   return (
     <ScreenWrapper bg={'white'}>
       <View style={styles.container}>
@@ -100,7 +144,6 @@ const Home = () => {
         </View>
 
         {/* posts */}
-
         <FlatList
           data={posts}
           showsVerticalScrollIndicator={false}
@@ -111,6 +154,15 @@ const Home = () => {
               currentUser={user}
               router={router}
           />       
+          }
+
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={theme.colors.primary}
+              colors={[theme.colors.primary]}
+            />
           }
 
           onEndReached={() => {
@@ -129,7 +181,6 @@ const Home = () => {
           )}
         />
       </View>
-      {/* <Button title='logout' onPress={onLogout}/> */}
     </ScreenWrapper>
   )
 }
@@ -138,69 +189,66 @@ export default Home
 
 const styles = StyleSheet.create({
   container: {
-  flex: 1,
-  paddingTop: Platform.OS === 'android' ? hp(2) : 0,
-  // paddingHorizontal: wp(4),
-},
+    flex: 1,
+    paddingTop: Platform.OS === 'android' ? hp(2) : 0,
+  },
 
-header: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginBottom: 10,
-  marginHorizontal: wp(4),
-},
-title: {
-  color: theme.colors.text,
-  fontSize: hp(3.2),
-  fontWeight: theme.fonts.bold,
-},
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    marginHorizontal: wp(4),
+  },
 
-avatarImage: {
-  height: hp(4.3),
-  width: hp(4.3),
-  borderRadius: theme.radius.sm,
-  borderCurve: 'continuous',
-  borderColor: theme.colors.gray,
-  borderWidth: 3,
-},
+  title: {
+    color: theme.colors.text,
+    fontSize: hp(3.2),
+    fontWeight: theme.fonts.bold,
+  },
 
-icons: {
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  gap: 18,
-},
+  avatarImage: {
+    height: hp(4.3),
+    width: hp(4.3),
+    borderRadius: theme.radius.sm,
+    borderCurve: 'continuous',
+    borderColor: theme.colors.gray,
+    borderWidth: 3,
+  },
 
-listStyle: {
-  paddingTop: 20,
-  paddingHorizontal: wp(4),
-},
+  icons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 18,
+  },
 
-noPosts: {
-  fontSize: hp(2),
-  textAlign: 'center',
-  color: theme.colors.text,
-},
+  listStyle: {
+    paddingTop: 20,
+    paddingHorizontal: wp(4),
+  },
 
-pill: {
-  position: 'absolute',
-  right: -10,
-  top: -4,
-  height: hp(2.2),
-  width: hp(2.2),
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderRadius: 20,
-  backgroundColor: theme.colors.roseLight,
-},
+  noPosts: {
+    fontSize: hp(2),
+    textAlign: 'center',
+    color: theme.colors.text,
+  },
 
-pillText: {
-  color: 'white',
-  fontSize: hp(1.2),
-  fontWeight: theme.fonts.bold,
-}
+  pill: {
+    position: 'absolute',
+    right: -10,
+    top: -4,
+    height: hp(2.2),
+    width: hp(2.2),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    backgroundColor: theme.colors.roseLight,
+  },
 
-
-
+  pillText: {
+    color: 'white',
+    fontSize: hp(1.2),
+    fontWeight: theme.fonts.bold,
+  }
 })
