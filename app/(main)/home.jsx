@@ -25,7 +25,7 @@ const Home = () => {
     const [posts, setPosts] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-    const [notificationCount, setNotificationCount] = useState(0);
+    const [hasUnreadNotification, setHasUnreadNotification] = useState(false);
     
     // Store comment to post mapping for deletion events
     const commentPostMapRef = useRef({});
@@ -163,11 +163,12 @@ const Home = () => {
     }
 
     const handleNewNotification = async(payload) => {
-      console.log('HOME - New Notification received:', payload);
-      if(payload.eventType == "INSERT" && payload.new.id){
-        setNotificationCount(prev=> prev+1);
-      }
-    }
+       console.log('HOME - New Notification received:', payload);
+       if(payload.eventType == "INSERT" && payload.new.id && payload.new.receiverId === user.id){
+         console.log('HOME - Setting unread notification for current user');
+         setHasUnreadNotification(true);
+       }
+     }
 
     useEffect(() => {
       let postChannel = supabase
@@ -193,9 +194,9 @@ const Home = () => {
 
         let notificationChannel = supabase
         .channel('notifications')
-        .on('postgres_changes', {event: 'INSERT', schema: 'public', table: 'notifications', filter: `receiverId=eq.${user.id}`}, handleNewNotification)
+        .on('postgres_changes', {event: 'INSERT', schema: 'public', table: 'notifications'}, handleNewNotification)
         .subscribe((status) => {
-          console.log('HOME - Posts channel status:', status);
+          console.log('HOME - Notification channel status:', status);
         });
 
       console.log('HOME - Subscribed to real-time channels');
@@ -263,16 +264,14 @@ const Home = () => {
           <View style={styles.icons}>
             <Pressable onPress={() => 
               {
-                setNotificationCount(0);
+                setHasUnreadNotification(false);
                 router.push('notifications')
               }
             }>
               <Icon name='heart' size={hp(3.2)} strokeWidth={2} color={theme.colors.text} />
               {
-                notificationCount > 0 && (
-                  <View style={styles.pill}>
-                    <Text style={styles.pillText}>{notificationCount}</Text>
-                  </View>
+                hasUnreadNotification && (
+                  <View style={styles.notificationDot} />
                 )
               }
             </Pressable>
@@ -381,21 +380,13 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
   },
 
-  pill: {
+  notificationDot: {
     position: 'absolute',
-    right: -10,
-    top: -4,
-    height: hp(2.2),
-    width: hp(2.2),
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 20,
-    backgroundColor: theme.colors.roseLight,
-  },
-
-  pillText: {
-    color: 'white',
-    fontSize: hp(1.2),
-    fontWeight: theme.fonts.bold,
+    right: -5,
+    top: -5,
+    height: hp(1.2),
+    width: hp(1.2),
+    borderRadius: 50,
+    backgroundColor: theme.colors.heart,
   }
 })
