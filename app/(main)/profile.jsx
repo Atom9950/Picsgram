@@ -191,6 +191,9 @@ const UserHeader = ({user, router, handleLogout}) => {
                         <View style={styles.info}>
                             <Icon name="mail" size={20} color={theme.colors.textLight}/>
                             <Text style={styles.infoText}>{user && user.email}</Text>
+                            <View style={styles.accessIndicator}>
+                                <Text style={styles.accessText}>Only visible to you</Text>
+                            </View>
                         </View>
                         {
                             user && user.phoneNumber && (
@@ -291,5 +294,20 @@ noPosts: {
   textAlign: 'center',
   color: theme.colors.text,
 },
+
+    accessIndicator: {
+        backgroundColor: '#fef3c7',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#fcd34d',
+    },
+
+    accessText: {
+        fontSize: hp(1.4),
+        fontWeight: '600',
+        color: '#92400e',
+    },
 
 })

@@ -218,8 +218,8 @@ const UserHeader = ({ user, router, isGrantedAccess, onBackPress }) => {
                     <TouchableOpacity onPress={() => {
                         console.log('Back button pressed');
                         onBackPress();
-                    }}>
-                        <Icon name="arrowLeft" size={24} strokeWidth={2} color={theme.colors.text} />
+                    }} style={styles.button}>
+                        <Icon name="arrowLeft" size={26} strokeWidth={2} color={theme.colors.text}/>
                     </TouchableOpacity>
                     {isGrantedAccess && (
                         <View style={styles.accessIndicator}>
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 20,
-        marginTop: 10,
+        marginTop: 30,
     },
 
     accessIndicator: {
@@ -336,4 +336,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: theme.colors.text,
     },
+
+    button:{
+            alignSelf:"flex-start",
+            padding: 5,
+            borderRadius: theme.radius.sm,
+            backgroundColor: "rgba(0,0,0,0.07)",
+        }
 });

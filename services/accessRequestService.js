@@ -64,6 +64,23 @@ export const getAccessRequests = async (userId) => {
 // Accept an access request
 export const acceptAccessRequest = async (requestId, senderId, receiverId) => {
     try {
+        // Check if grant already exists
+        const { data: existingGrant } = await supabase
+            .from('profile_access_grants')
+            .select('id')
+            .eq('grantedby', receiverId)
+            .eq('grantedto', senderId)
+            .single();
+
+        // If grant exists and not expired, just delete the request
+        if (existingGrant) {
+            await supabase
+                .from('profile_access_requests')
+                .delete()
+                .eq('id', requestId);
+            return { success: true, data: existingGrant, senderId };
+        }
+
         // Create access grant - expires in 24 hours
         const expiresAt = new Date();
         expiresAt.setHours(expiresAt.getHours() + 24);
@@ -128,8 +145,7 @@ export const checkProfileAccess = async (grantedTo, grantedBy) => {
             .select('*')
             .eq('grantedto', grantedTo)
             .eq('grantedby', grantedBy)
-            .eq('isused', false)
-            .single();
+            .maybeSingle();
 
         if (error) {
             return { success: false, hasAccess: false };

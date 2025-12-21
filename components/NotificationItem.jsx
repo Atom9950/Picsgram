@@ -1,11 +1,12 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { hp, wp } from '../helpers/common'
 import { theme } from '../constants/theme'
 import Avatar from './Avatar'
 import moment from 'moment'
 import { acceptAccessRequest, rejectAccessRequest } from '../services/accessRequestService'
 import { createNotification } from '../services/notificationService'
+import { supabase } from '../lib/supabase'
 
 const NotificationItem = ({
     item,
@@ -16,6 +17,31 @@ const NotificationItem = ({
 ) => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [isProcessed, setIsProcessed] = useState(false);
+
+    // Check if request still exists in database (for access request types)
+    useEffect(() => {
+        const checkRequestExists = async () => {
+            if (item?.type === 'profile_access_request') {
+                try {
+                    const data = JSON.parse(item?.data);
+                    const { data: request, error } = await supabase
+                        .from('profile_access_requests')
+                        .select('id')
+                        .eq('id', data?.requestId)
+                        .single();
+
+                    // If no request found (deleted/processed), mark as processed
+                    if (!request || error) {
+                        setIsProcessed(true);
+                    }
+                } catch (error) {
+                    console.log('Error checking request:', error);
+                }
+            }
+        };
+
+        checkRequestExists();
+    }, [item?.id, item?.type, item?.data]);
 
     const handleClick = () => {
         // Check notification type
