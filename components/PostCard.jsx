@@ -36,7 +36,10 @@ const PostCard = ({
     currentUser,
     router,
     hasShadow = true,
-    showMoreIcon = true
+    showMoreIcon = true,
+    showDelete = false,
+    onDelete = () => {},
+    onEdit = () => {},
 }) => {
 
     // DEBUG LOGGING
@@ -183,6 +186,24 @@ const PostCard = ({
       }
     }
 
+    const handleDeletePost = () => {
+      Alert.alert(
+                  "Are you sure?",
+                  `Do you want to delete this comment?`,
+                  [
+                    {
+                      text: "Cancel",
+                      onPress: () => console.log("Cancel Pressed"),
+                      style: "cancel"
+                    },
+                    { text: "OK",
+                      onPress: () => onDelete(item),
+                      style: 'destructive'
+                   }
+                  ]
+                )
+    }
+
     const createdAt = moment(item?.created_at).format('MMM D')
     const liked = likes.filter(like => like.userId == currentUser?.id)[0] ? true : false;
 
@@ -207,6 +228,19 @@ const PostCard = ({
               <TouchableOpacity onPress={openPostDetails}>
                 <Icon name='threeDotsHorizontal' size={hp(3.4)} strokeWidth={3} color={theme.colors.text} />
               </TouchableOpacity>
+            )
+          }
+
+          {
+            showDelete && currentUser.id == item?.userId && (
+              <View style={styles.actions}>
+                <TouchableOpacity onPress={() => onEdit(item)}>
+                  <Icon name='edit' size={hp(2.5)} strokeWidth={2} color={theme.colors.text} />
+                </TouchableOpacity>
+                 <TouchableOpacity onPress={handleDeletePost}>
+                  <Icon name='delete' size={hp(2.5)} strokeWidth={2} color={theme.colors.heart} />
+                </TouchableOpacity>
+              </View>
             )
           }
         </View>

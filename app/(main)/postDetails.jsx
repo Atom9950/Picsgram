@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { createComment, fetchPostDetails, removeComment } from '../../services/postService';
+import { createComment, fetchPostDetails, removeComment, removePost } from '../../services/postService';
 import { hp, wp } from '../../helpers/common';
 import { theme } from '../../constants/theme';
 import { ScrollView } from 'react-native';
@@ -132,6 +132,25 @@ useEffect(() => {
 
     }
 
+    //delete post
+    const onDeletePost = async (item) => {
+
+      //delete post logic here
+      let res = await removePost(post?.id);
+      if(res.success){
+        Alert.alert("Success", "Your post was deleted successfully")
+        router.back()
+      }else{
+        Alert.alert("Error", "Something went wrong");
+      }
+    }
+
+    //edit post
+    const onEditPost = async(item) => {
+      router.back();
+      router.push({pathname: 'newPost', params:{...item}})
+    }
+
     if(startLoding){
       return(
         <View style={styles.center}>
@@ -158,6 +177,9 @@ useEffect(() => {
             router={router}
             hasShadow={false}
             showMoreIcon={false}
+            showDelete={true}
+            onDelete={onDeletePost}
+            onEdit={onEditPost}
           />
 
           {/* comment input */}
