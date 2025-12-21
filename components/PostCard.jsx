@@ -63,7 +63,7 @@ const PostCard = ({
 
     useEffect(() => {
       setLikes(item?.postLikes || []);
-    }, [])
+    }, [item?.postLikes])
 
     // Create video player for video posts
     const isVideo = item?.file && item.file.includes('postVideos');
@@ -189,7 +189,7 @@ const PostCard = ({
     const handleDeletePost = () => {
       Alert.alert(
                   "Are you sure?",
-                  `Do you want to delete this comment?`,
+                  `Do you want to delete this post?`,
                   [
                     {
                       text: "Cancel",

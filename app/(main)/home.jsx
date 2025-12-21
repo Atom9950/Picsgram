@@ -1,5 +1,5 @@
 import { Alert, Platform, Pressable, StyleSheet, Text, View, RefreshControl } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import Button from '../../components/Button'
 import { useAuth } from '../../contexts/AuthContext'
@@ -25,6 +25,9 @@ const Home = () => {
     const [posts, setPosts] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    
+    // Store comment to post mapping for deletion events
+    const commentPostMapRef = useRef({});
 
     const handlePostEvent = async(payload) => {
       // console.log('HOME - Post event received:', payload);
@@ -66,6 +69,11 @@ const Home = () => {
         const newComment = payload.new;
         console.log('HOME - INSERT - Updating post with ID:', newComment.postId);
         
+        // Store the mapping for future deletion
+        if(newComment.id && newComment.postId) {
+          commentPostMapRef.current[newComment.id] = newComment.postId;
+        }
+        
         setPosts(prevPosts => 
           prevPosts.map(post => {
             if(post.id === newComment.postId) {
@@ -83,16 +91,68 @@ const Home = () => {
       
       if(payload.eventType == "DELETE" && payload?.old?.id){
         const deletedComment = payload.old;
-        console.log('HOME - DELETE - Updating post with ID:', deletedComment.postId);
+        // Get postId from our stored mapping
+        const postId = commentPostMapRef.current[deletedComment.id];
+        console.log('HOME - DELETE - Comment ID:', deletedComment.id, 'PostId from map:', postId);
+        
+        if(postId) {
+          setPosts(prevPosts => 
+            prevPosts.map(post => {
+              if(post.id === postId) {
+                const newCount = Math.max(0, (post?.comments?.[0]?.count || 0) - 1);
+                console.log('HOME - Old count:', post?.comments?.[0]?.count, 'New count:', newCount);
+                return {
+                  ...post,
+                  comments: [{count: newCount}]
+                };
+              }
+              return post;
+            })
+          );
+          
+          // Clean up the mapping
+          delete commentPostMapRef.current[deletedComment.id];
+        } else {
+          console.log('HOME - DELETE - PostId not found in map, will refresh on next pull');
+        }
+      }
+    }
+
+    const handlePostLikeEvent = async(payload) => {
+      console.log('HOME - PostLike event received:', payload);
+      console.log('HOME - PostLike new data:', payload.new);
+      console.log('HOME - PostLike old data:', payload.old);
+      
+      if(payload.eventType == "INSERT" && payload?.new?.id){
+        const newLike = payload.new;
+        console.log('HOME - LIKE INSERT - Updating post with ID:', newLike.postId);
         
         setPosts(prevPosts => 
           prevPosts.map(post => {
-            if(post.id === deletedComment.postId) {
-              const newCount = Math.max(0, (post?.comments?.[0]?.count || 0) - 1);
-              console.log('HOME - Old count:', post?.comments?.[0]?.count, 'New count:', newCount);
+            if(post.id === newLike.postId) {
+              console.log('HOME - Found post to update, current likes:', post.postLikes?.length || 0);
               return {
                 ...post,
-                comments: [{count: newCount}]
+                postLikes: [...(post.postLikes || []), newLike]
+              };
+            }
+            return post;
+          })
+        );
+      }
+      
+      if(payload.eventType == "DELETE" && payload?.old?.id){
+        const deletedLike = payload.old;
+        console.log('HOME - LIKE DELETE - Like ID:', deletedLike.id);
+        
+        setPosts(prevPosts => 
+          prevPosts.map(post => {
+            const filteredLikes = (post.postLikes || []).filter(like => like.id !== deletedLike.id);
+            if(filteredLikes.length !== post.postLikes?.length) {
+              console.log('HOME - Removed like from post:', post.id);
+              return {
+                ...post,
+                postLikes: filteredLikes
               };
             }
             return post;
@@ -103,14 +163,27 @@ const Home = () => {
 
     useEffect(() => {
       let postChannel = supabase
-        .channel('posts')
+        .channel('home-posts-channel')
         .on('postgres_changes', {event: '*', schema: 'public', table: 'posts'}, handlePostEvent)
-        .subscribe();
+        .subscribe((status) => {
+          console.log('HOME - Posts channel status:', status);
+        });
 
       let commentChannel = supabase
-        .channel('comments')
+        .channel('home-comments-channel')
         .on('postgres_changes', {event: '*', schema: 'public', table: 'comments'}, handleCommentEvent)
-        .subscribe();
+        .subscribe((status) => {
+          console.log('HOME - Comments channel status:', status);
+        });
+
+      let postLikeChannel = supabase
+        .channel('home-postlikes-channel')
+        .on('postgres_changes', {event: '*', schema: 'public', table: 'postLikes'}, handlePostLikeEvent)
+        .subscribe((status) => {
+          console.log('HOME - PostLikes channel status:', status);
+        });
+
+      console.log('HOME - Subscribed to real-time channels');
 
       // Initial load
       getPosts();
@@ -118,19 +191,42 @@ const Home = () => {
       return() => {
         supabase.removeChannel(postChannel);
         supabase.removeChannel(commentChannel);
+        supabase.removeChannel(postLikeChannel);
       }
     }, [])
 
     const getPosts = async() => {
       if(!hasMore) return null;
       limit = limit + 4;
+      
+      console.log('HOME - Fetching with limit:', limit);
 
       let res = await fetchPosts(limit);
       if(res.success){
+        console.log('HOME - Fetched posts:', res.data.length);
+        
+        // Debug: Log the first post's likes
+        if(res.data.length > 0) {
+          console.log('HOME - First post likes:', res.data[0].postLikes);
+          console.log('HOME - First post like count:', res.data[0].postLikes?.length);
+        }
+        
+        // Build comment-to-post mapping from fetched posts
+        res.data.forEach(post => {
+          if(post.comments && Array.isArray(post.comments)) {
+            post.comments.forEach(comment => {
+              if(comment.id) {
+                commentPostMapRef.current[comment.id] = post.id;
+              }
+            });
+          }
+        });
+        
         if(posts.length==res.data.length){
           setHasMore(false);
         }
-        setPosts(res.data)
+        // Create a new array to force React to detect the change
+        setPosts([...res.data])
       }
     }
 

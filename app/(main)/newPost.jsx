@@ -182,6 +182,10 @@ const onSubmit = async() => {
             </TouchableOpacity>
           </View>
         </View>
+       <Text style={{ textAlign: 'center', color: theme.colors.textLight }}>
+          If the video file fails to upload, please try uploading a smaller file size.
+       </Text>
+
       </ScrollView>
 
       <Button

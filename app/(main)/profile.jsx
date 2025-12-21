@@ -1,5 +1,5 @@
 import { Alert, Pressable, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { use, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import { useAuth } from '../../contexts/AuthContext'
 import { useRouter } from 'expo-router'
@@ -14,14 +14,20 @@ import { FlatList } from 'react-native'
 import Loading from '../../components/Loading'
 import PostCard from '../../components/PostCard'
 
-var limit = 0;
-
 const Profile = () => {
     const {user, setAuth} = useAuth();
     const router = useRouter();
     const [posts, setPosts] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [limit, setLimit] = useState(0);
+
+    // Load posts when user is available
+    useEffect(() => {
+      if(user?.id) {
+        getPosts();
+      }
+    }, [user?.id]);
 
     const onLogout = async() => {
             // setAuth(null);
@@ -32,24 +38,47 @@ const Profile = () => {
          }
     };
 
-        const getPosts = async() => {
-          if(!hasMore) return null;
-          limit = limit + 4;
-    
-          let res = await fetchPosts(limit, user.id);
-          if(res.success){
-            if(posts.length==res.data.length){
-              setHasMore(false);
-            }
-            setPosts(res.data)
-          }
+    const getPosts = async() => {
+      if(!hasMore || !user?.id) return null;
+      
+      const newLimit = limit + 4;
+      setLimit(newLimit);
+
+      let res = await fetchPosts(newLimit, user.id);
+      if(res.success){
+        if(posts.length==res.data.length){
+          setHasMore(false);
         }
+        setPosts(res.data)
+      }
+    }
 
     const onRefresh = async() => {
+      if(!user?.id) return;
+      
       setRefreshing(true);
-      limit = 0;
+      
+      // Store current number of posts to reload the same amount
+      const currentPostCount = posts.length;
+      
+      // Reset and fetch fresh data
+      const refreshLimit = currentPostCount > 0 ? currentPostCount : 4;
+      setLimit(refreshLimit);
       setHasMore(true);
-      await getPosts();
+      
+      console.log('PROFILE - Refreshing with limit:', refreshLimit);
+      
+      let res = await fetchPosts(refreshLimit, user.id);
+      if(res.success){
+        console.log('PROFILE - Fetched posts:', res.data.length);
+        setPosts(res.data);
+        
+        // Check if there are more posts available
+        if(res.data.length < refreshLimit){
+          setHasMore(false);
+        }
+      }
+      
       setRefreshing(false);
     }
 
@@ -69,6 +98,17 @@ const Profile = () => {
           }
         ])
     };
+
+    // Show loading while user data is being fetched
+    if(!user) {
+      return (
+        <ScreenWrapper bg={'white'}>
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Loading />
+          </View>
+        </ScreenWrapper>
+      );
+    }
 
   return (
     <ScreenWrapper bg={'white'}>
@@ -122,7 +162,7 @@ const UserHeader = ({user, router, handleLogout}) => {
                 <Header title='Profile' mb={30}/>
                 <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                     <Icon name="logout" size={20} color={theme.colors.heart}/>
-                </TouchableOpacity>
+                </TouchableOpacity>              
             </View>
 
             <View style={styles.container}>
