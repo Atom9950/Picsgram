@@ -21,15 +21,69 @@ const textStyles = {
 }
 
 const tagsStyles = {
-  div: textStyles,
-  p: textStyles,
-  ol: textStyles,
+  body: {
+    color: theme.colors.dark,
+    fontSize: hp(1.75),
+  },
+  div: {
+    color: theme.colors.dark,
+    fontSize: hp(1.75),
+  },
+  p: {
+    color: theme.colors.dark,
+    fontSize: hp(1.75),
+    marginBottom: 4,
+  },
+  ol: {
+    color: theme.colors.dark,
+    fontSize: hp(1.75),
+  },
+  ul: {
+    color: theme.colors.dark,
+    fontSize: hp(1.75),
+  },
   h1: {
-    color: theme.colors.dark
+    color: theme.colors.dark,
+    fontSize: hp(2.5),
+    fontWeight: 'bold',
+    marginBottom: 8,
+    width: '100%', // ADD THIS
   },
   h4: {
-    color: theme.colors.dark
-  }
+    color: theme.colors.dark,
+    fontSize: hp(2),
+    fontWeight: '600',
+    marginBottom: 6,
+    width: '100%', // ADD THIS
+  },
+  strong: {
+    fontWeight: 'bold',
+  },
+  b: {
+    fontWeight: 'bold',
+  },
+  em: {
+    fontStyle: 'italic',
+  },
+  i: {
+    fontStyle: 'italic',
+  },
+  span: {
+    color: theme.colors.dark, // ADD THIS ENTIRE SPAN SECTION
+  },
+  blockquote: {
+    borderLeftWidth: 3,
+    borderLeftColor: theme.colors.primary,
+    paddingLeft: 10,
+    fontStyle: 'italic',
+    marginVertical: 8,
+  },
+  code: {
+    backgroundColor: theme.colors.gray,
+    padding: 4,
+    borderRadius: 4,
+    fontFamily: 'monospace',
+  },
 };
 
 const PostCard = ({
@@ -261,10 +315,25 @@ const PostCard = ({
         {/* post body and media */}
         <View style={styles.content}>
           <View style={styles.postBody}>
-            {
-              item?.body &&
-                <RenderHtml contentWidth={wp(100)} source={{html: item?.body}} tagsStyles={tagsStyles}/>
-            }
+           
+           {
+  item?.body &&
+    <RenderHtml 
+      contentWidth={wp(100)} 
+      source={{html: item?.body}} 
+      tagsStyles={tagsStyles}
+      enableCSSInlineProcessing={true}
+      ignoredStyles={["fontSize"]}
+      renderersProps={{
+        img: {
+          enableExperimentalPercentWidth: true,
+        },
+      }}
+      defaultTextProps={{
+        allowFontScaling: false,
+      }}
+    />
+}
           </View>
 
           {/* post image */}

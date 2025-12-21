@@ -27,7 +27,7 @@ const Notifications = () => {
     <ScreenWrapper>
       <View style={styles.container}>
         <Header title='Notifications'/>
-        <ScrollView showsHorizontalScrollIndicator={false} contentContainerStyle={styles.listStyle}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.listStyle}>
           {
             notifications.map(item => {
               return (

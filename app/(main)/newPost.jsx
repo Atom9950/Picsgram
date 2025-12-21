@@ -99,6 +99,10 @@ const onSubmit = async() => {
     return;
   }
 
+   console.log('========== BODY HTML ==========');
+  console.log(bodyRef.current);
+  console.log('===============================');
+
   let data = {
     file,
     body: bodyRef.current,
