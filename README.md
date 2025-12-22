@@ -25,9 +25,10 @@ Picsgram is a modern mobile social media application built with React Native and
 - **Advanced RLS Policies** - Database-level security with Row Level Security
 - **Encrypted Data Storage** - Your data is stored securely in Supabase database
 
-### 🎭 Unique Feature: One-Time Profile Viewing
+### 1️⃣ Unique Feature: One-Time Profile Viewing
 
-![WhatsApp Image 2025-12-22 at 11 31 10 AM](https://github.com/user-attachments/assets/9df900a2-a6d2-4090-92ee-5f72c4522922)
+![WhatsApp Image 2025-12-223 at 11 31 10 AM](https://github.com/user-attachments/assets/018896f0-5811-4b68-95c1-70e22a5b13c9)
+
 
 
 Picsgram introduces an innovative privacy feature that gives users complete control over their profile visibility:
