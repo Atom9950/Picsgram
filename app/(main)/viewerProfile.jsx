@@ -63,6 +63,9 @@ const ViewerProfile = () => {
                 } else if (result.isExpired) {
                     Alert.alert('Access Expired', 'Your profile access has expired. Please request again.');
                     setTimeout(() => router.back(), 500);
+                } else if (result.isUsed) {
+                    Alert.alert('Access Already Used', 'This one-time access has already been used.');
+                    setTimeout(() => router.back(), 500);
                 } else {
                     Alert.alert('No Access', 'You do not have access to view this profile.');
                     setTimeout(() => router.back(), 500);
