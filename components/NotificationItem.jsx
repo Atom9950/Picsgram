@@ -4,7 +4,7 @@ import { hp, wp } from '../helpers/common'
 import { theme } from '../constants/theme'
 import Avatar from './Avatar'
 import moment from 'moment'
-import { acceptAccessRequest, rejectAccessRequest } from '../services/accessRequestService'
+import { acceptAccessRequest, rejectAccessRequest, cancelAccessRequest } from '../services/accessRequestService'
 import { createNotification, deleteNotification } from '../services/notificationService'
 import { supabase } from '../lib/supabase'
 import ProfileAccessModal from './ProfileAccessModal'
@@ -144,6 +144,27 @@ const NotificationItem = ({
         }
     };
 
+    const handleCancelRequest = async () => {
+        setIsProcessing(true);
+        try {
+            const data = JSON.parse(item?.data);
+            const result = await cancelAccessRequest(data?.requestId, item?.senderId, item?.receiverId);
+
+            if (result.success) {
+                setIsProcessed(true);
+                Alert.alert('Success', 'Profile access request cancelled');
+                onActionComplete();
+            } else {
+                Alert.alert('Error', result.msg || 'Failed to cancel request');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Something went wrong');
+            console.log('cancelRequest error:', error);
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
     const handleDeletePress = () => {
         Alert.alert(
             'Delete Notification',
@@ -197,6 +218,8 @@ const NotificationItem = ({
 
     const isAccessRequest = item?.type === 'profile_access_request';
     const isAccessGranted = item?.type === 'profile_access_granted';
+    const isSender = currentUser?.id === item?.senderId;
+    const isReceiver = currentUser?.id === item?.receiverId;
 
   const handleUserPress = () => {
     console.log('handleUserPress called');
@@ -270,24 +293,36 @@ const NotificationItem = ({
           activeOpacity={isAccessRequest ? 1 : 0.7}
         >
           {/* Action buttons for access requests */}
-          {isAccessRequest ? (
-            <View style={styles.actionButtons}>
-              <TouchableOpacity 
-                style={[styles.actionBtn, styles.acceptBtn, isProcessed && styles.disabledBtn]}
-                onPress={handleAcceptRequest}
-                disabled={isProcessing || isProcessed}
-              >
-                <Text style={{ color: isProcessed ? '#999' : 'white', fontSize: 16, fontWeight: 'bold' }}>✓</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.actionBtn, styles.rejectBtn, isProcessed && styles.disabledBtn]}
-                onPress={handleRejectRequest}
-                disabled={isProcessing || isProcessed}
-              >
-                <Text style={{ color: isProcessed ? '#999' : 'white', fontSize: 16, fontWeight: 'bold' }}>✕</Text>
-              </TouchableOpacity>
-            </View>
-          ) : isAccessGranted ? (
+           {isAccessRequest ? (
+             <View style={styles.actionButtons}>
+               {isReceiver ? (
+                 <>
+                   <TouchableOpacity 
+                     style={[styles.actionBtn, styles.acceptBtn, isProcessed && styles.disabledBtn]}
+                     onPress={handleAcceptRequest}
+                     disabled={isProcessing || isProcessed}
+                   >
+                     <Text style={{ color: isProcessed ? '#999' : 'white', fontSize: 16, fontWeight: 'bold' }}>✓</Text>
+                   </TouchableOpacity>
+                   <TouchableOpacity 
+                     style={[styles.actionBtn, styles.rejectBtn, isProcessed && styles.disabledBtn]}
+                     onPress={handleRejectRequest}
+                     disabled={isProcessing || isProcessed}
+                   >
+                     <Text style={{ color: isProcessed ? '#999' : 'white', fontSize: 16, fontWeight: 'bold' }}>✕</Text>
+                   </TouchableOpacity>
+                 </>
+               ) : isSender ? (
+                 <TouchableOpacity 
+                   style={[styles.actionBtn, styles.cancelBtn, isProcessed && styles.disabledBtn]}
+                   onPress={handleCancelRequest}
+                   disabled={isProcessing || isProcessed}
+                 >
+                   <Text style={{ color: isProcessed ? '#999' : 'white', fontSize: 16, fontWeight: 'bold' }}>✕</Text>
+                 </TouchableOpacity>
+               ) : null}
+             </View>
+           ) : isAccessGranted ? (
             <TouchableOpacity 
               style={styles.viewBtn}
               onPress={handleClick}
@@ -360,6 +395,10 @@ acceptBtn: {
 },
 
 rejectBtn: {
+  backgroundColor: theme.colors.heart,
+},
+
+cancelBtn: {
   backgroundColor: theme.colors.heart,
 },
 

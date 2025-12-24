@@ -37,7 +37,7 @@ export const createAccessRequest = async (senderId, receiverId) => {
     }
 };
 
-// Get pending access requests for a user
+// Get pending access requests for a user (received requests)
 export const getAccessRequests = async (userId) => {
     try {
         const { data, error } = await supabase
@@ -57,6 +57,30 @@ export const getAccessRequests = async (userId) => {
         return { success: true, data };
     } catch (error) {
         console.log('getAccessRequests error:', error);
+        return { success: false, msg: error.message };
+    }
+};
+
+// Get sent access requests (requests sent by a user)
+export const getSentAccessRequests = async (userId) => {
+    try {
+        const { data, error } = await supabase
+            .from('profile_access_requests')
+            .select(`
+                *,
+                receiver: receiverid(id, name, image)
+            `)
+            .eq('senderid', userId)
+            .eq('status', 'pending')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            return { success: false, msg: error.message };
+        }
+
+        return { success: true, data };
+    } catch (error) {
+        console.log('getSentAccessRequests error:', error);
         return { success: false, msg: error.message };
     }
 };
@@ -191,6 +215,41 @@ export const useProfileAccess = async (grantId) => {
         return { success: true };
     } catch (error) {
         console.log('useProfileAccess error:', error);
+        return { success: false, msg: error.message };
+    }
+};
+
+// Cancel a sent access request (sender cancels their own request)
+export const cancelAccessRequest = async (requestId, senderId, receiverId) => {
+    try {
+        // Delete the access request
+        const { error: requestError } = await supabase
+            .from('profile_access_requests')
+            .delete()
+            .eq('id', requestId);
+
+        if (requestError) {
+            return { success: false, msg: requestError.message };
+        }
+
+        // Delete the corresponding notification sent to receiver
+        const { error: notifError } = await supabase
+            .from('notifications')
+            .delete()
+            .eq('senderId', senderId)
+            .eq('receiverId', receiverId)
+            .eq('type', 'profile_access_request')
+            .eq('data', JSON.stringify({ requestId: requestId }));
+
+        if (notifError) {
+            console.log('Error deleting notification:', notifError);
+            // Don't fail the request cancellation if notification deletion fails
+            // The important part (request deletion) succeeded
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.log('cancelAccessRequest error:', error);
         return { success: false, msg: error.message };
     }
 };
