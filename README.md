@@ -287,11 +287,6 @@ Please make sure to update tests as appropriate and follow the existing code sty
 
 ---
 
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
 
 ## 👨‍💻 Developer
 
