@@ -4,8 +4,13 @@
 
 Picsgram is a modern mobile social media application built with React Native and Expo that puts user privacy first. Share your moments through posts, images, and videos while enjoying a unique profile viewing system that gives you control over who sees your content.
 
-![WhatsApp Image 2025-12-22 at 11 31 09 AM (2)](https://github.com/user-attachments/assets/ab4b9fa6-acf0-46e7-b6c0-01a49c790a88)
+<div align="center">
 
+| App Banner |
+|:----------:|
+| ![WhatsApp Image 2025-12-22 at 11 31 09 AM (2)](https://github.com/user-attachments/assets/ab4b9fa6-acf0-46e7-b6c0-01a49c790a88) |
+
+</div>
 
 ---
 
@@ -27,9 +32,13 @@ Picsgram is a modern mobile social media application built with React Native and
 
 ### 1️⃣ Unique Feature: One-Time Profile Viewing
 
-![WhatsApp Image 2025-12-223 at 11 31 10 AM](https://github.com/user-attachments/assets/018896f0-5811-4b68-95c1-70e22a5b13c9)
+<div align="center">
 
+| One-Time Profile Viewing Feature |
+|:--------------------------------:|
+| ![WhatsApp Image 2025-12-223 at 11 31 10 AM](https://github.com/user-attachments/assets/018896f0-5811-4b68-95c1-70e22a5b13c9) |
 
+</div>
 
 Picsgram introduces an innovative privacy feature that gives users complete control over their profile visibility:
 
@@ -58,8 +67,13 @@ Picsgram introduces an innovative privacy feature that gives users complete cont
    - To view the profile again, User A must send a new request
    - This ensures ongoing privacy control for all users
 
-![WhatsApp Image 2025-12-22 at 11 31 08 AM](https://github.com/user-attachments/assets/7744d31f-5654-447f-8067-d49ca07a6aca)
+<div align="center">
 
+| Profile Request Flow |
+|:--------------------:|
+| ![WhatsApp Image 2025-12-22 at 11 31 08 AM](https://github.com/user-attachments/assets/7744d31f-5654-447f-8067-d49ca07a6aca) |
+
+</div>
 
 ---
 
