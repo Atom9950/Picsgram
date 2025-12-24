@@ -29,7 +29,11 @@ Picsgram is a modern mobile social media application built with React Native and
 ### 1️⃣ Unique Feature: One-Time Profile Viewing
 
 <div align="center">
-<img src="https://github.com/user-attachments/assets/018896f0-5811-4b68-95c1-70e22a5b13c9" alt="One-Time Profile Viewing Feature" width="300"/>
+
+| One-Time Profile Viewing Feature |
+|:--------------------------------:|
+| ![WhatsApp Image 2025-12-223 at 11 31 10 AM](https://github.com/user-attachments/assets/018896f0-5811-4b68-95c1-70e22a5b13c9) |
+
 </div>
 
 Picsgram introduces an innovative privacy feature that gives users complete control over their profile visibility:
