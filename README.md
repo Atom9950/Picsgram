@@ -258,21 +258,6 @@ Picsgram implements multiple layers of security:
 
 ---
 
-## 🎯 Roadmap
-
-### Upcoming Features
-- [ ] Push notifications (FCM/APNS)
-- [ ] Direct messaging between users
-- [ ] Story feature (24-hour posts)
-- [ ] Advanced search and filters
-- [ ] Dark mode support
-- [ ] Multiple image uploads per post
-- [ ] Video trimming and editing
-- [ ] Profile analytics
-- [ ] Block/Report functionality
-
----
-
 ## 🤝 Contributing
 
 Contributions are welcome! Here's how you can help:
