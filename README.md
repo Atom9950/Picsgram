@@ -52,7 +52,7 @@ Picsgram introduces an innovative privacy feature that gives users complete cont
 3. **Grant Permission**
    - User B can accept or decline the request
    - If accepted, User A receives a notification: *"User B has granted your request for one time"*
-   - A "View" button appears in the notification
+   - A "View" button appears in the notification page
 
 4. **One-Time Access**
    - User A can view User B's complete profile once
@@ -255,21 +255,6 @@ Picsgram implements multiple layers of security:
 - Profile viewing requests logged
 - Temporary access grants
 - User consent required for profile viewing
-
----
-
-## 🎯 Roadmap
-
-### Upcoming Features
-- [ ] Push notifications (FCM/APNS)
-- [ ] Direct messaging between users
-- [ ] Story feature (24-hour posts)
-- [ ] Advanced search and filters
-- [ ] Dark mode support
-- [ ] Multiple image uploads per post
-- [ ] Video trimming and editing
-- [ ] Profile analytics
-- [ ] Block/Report functionality
 
 ---
 
