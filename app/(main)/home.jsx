@@ -1,20 +1,18 @@
-import { Alert, Platform, Pressable, StyleSheet, Text, View, RefreshControl } from 'react-native'
+import { Alert, Platform, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
-import Button from '../../components/Button'
 import { useAuth } from '../../contexts/AuthContext'
 import { supabase } from '../../lib/supabase'
 import { hp, wp } from '../../helpers/common'
 import { theme } from '../../constants/theme'
-import Icon from '@/assets/icons'
 import { useRouter } from 'expo-router'
-import Avatar from '../../components/Avatar'
 import { fetchPosts } from '../../services/postService'
 import { FlatList } from 'react-native'
 import PostCard from '../../components/PostCard'
 import Loading from '../../components/Loading'
 import { getUserData } from '../../services/userService'
 import { checkUnreadNotifications, markNotificationsAsRead } from '../../services/notificationService'
+import FloatingDock from '../../components/FloatingDock'
 
 
 var limit = 0;
@@ -268,36 +266,9 @@ const Home = () => {
   return (
     <ScreenWrapper bg={theme.colors.background}>
       <View style={styles.container}>
-        {/* header */}
+        {/* header — title only */}
         <View style={styles.header}>
           <Text style={styles.title}>PicsGram</Text>
-          <View style={styles.icons}>
-            <Pressable onPress={async() => 
-              {
-                setHasUnreadNotification(false);
-                await markNotificationsAsRead(user.id);
-                router.push('notifications')
-              }
-            }>
-              <Icon name='heart' size={hp(2.8)} color={theme.colors.text} />
-              {
-                hasUnreadNotification && (
-                  <View style={styles.notificationDot} />
-                )
-              }
-            </Pressable>
-            <Pressable onPress={() => router.push('newPost')}>
-              <Icon name='plus' size={hp(2.8)} color={theme.colors.text} />
-            </Pressable>
-            <Pressable onPress={() => router.push('profile')}>
-              <Avatar
-                uri={user?.image}
-                size={hp(3.2)}
-                rounded={theme.radius.sm}
-                style={{borderWidth: 2}}
-              />
-            </Pressable>
-          </View>
         </View>
 
         {/* posts */}
@@ -338,6 +309,18 @@ const Home = () => {
           )}
         />
       </View>
+
+      {/* Floating Dock */}
+      <FloatingDock
+        router={router}
+        user={user}
+        hasUnreadNotification={hasUnreadNotification}
+        onNotificationsPress={async () => {
+          setHasUnreadNotification(false);
+          await markNotificationsAsRead(user.id);
+          router.push('notifications');
+        }}
+      />
     </ScreenWrapper>
   )
 }
@@ -353,7 +336,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginBottom: 10,
     marginHorizontal: wp(4),
   },
@@ -384,6 +367,7 @@ const styles = StyleSheet.create({
   listStyle: {
     paddingTop: 20,
     paddingHorizontal: wp(4),
+    paddingBottom: 110,
   },
 
   noPosts: {
@@ -391,14 +375,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: theme.colors.text,
   },
-
-  notificationDot: {
-    position: 'absolute',
-    right: -5,
-    top: -5,
-    height: hp(1.2),
-    width: hp(1.2),
-    borderRadius: 50,
-    backgroundColor: theme.colors.heart,
-  }
 })
