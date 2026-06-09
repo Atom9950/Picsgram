@@ -4,17 +4,17 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { createComment, fetchPostDetails, removeComment, removePost } from '../../services/postService';
 import { hp, wp } from '../../helpers/common';
 import { theme } from '../../constants/theme';
-import { ScrollView } from 'react-native';
 import PostCard from '../../components/PostCard';
 import { useAuth } from '../../contexts/AuthContext';
 import Loading from '../../components/Loading';
 import Input from '../../components/Input';
 import Icon from '@/assets/icons'
-import { Alert } from 'react-native';
+import { CustomAlert as Alert } from '../../services/alertService'
 import CommentItem from '../../components/CommentItem';
 import { supabase } from '../../lib/supabase';
 import { getUserData } from '../../services/userService';
 import { createNotification } from '../../services/notificationService';
+import Transition from 'react-native-screen-transitions';
 
 const PostDetails = () => {
     const {postId, commentId} = useLocalSearchParams();
@@ -162,7 +162,6 @@ useEffect(() => {
 
     //edit post
     const onEditPost = async(item) => {
-      router.back();
       router.push({pathname: 'newPost', params:{...item}})
     }
 
@@ -185,7 +184,11 @@ useEffect(() => {
 
     return (
       <View style={styles.container}>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.list}>
+        {/* Handle Bar */}
+        <View style={styles.handleBarContainer}>
+          <View style={styles.handleBar} />
+        </View>
+        <Transition.ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.list}>
           <PostCard
             item={{...post, comments: [{count: post?.comments?.length}]}}
             currentUser={user}
@@ -239,7 +242,7 @@ useEffect(() => {
               <Text style={{color: theme.colors.text, marginLeft: 5}}>No comments yet...</Text>
             }
           </View>
-        </ScrollView>
+        </Transition.ScrollView>
       </View>
     )
 }
@@ -249,9 +252,23 @@ export default PostDetails
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    paddingVertical: wp(7),
-    marginTop: 40
+    backgroundColor: theme.colors.background,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    overflow: 'hidden',
+    marginTop: 40,
+    paddingBottom: wp(7),
+  },
+  handleBarContainer: {
+    alignItems: 'center',
+    paddingTop: 15,
+    paddingBottom: 10,
+  },
+  handleBar: {
+    width: 60,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: theme.colors.darkLight,
   },
 
   inputContainer: {

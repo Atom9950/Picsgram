@@ -1,4 +1,5 @@
-import { Alert, ActivityIndicator } from 'react-native';
+import { ActivityIndicator } from 'react-native';
+import { CustomAlert as Alert } from '../services/alertService';
 import { createAccessRequest } from '../services/accessRequestService';
 import { createNotification } from '../services/notificationService';
 

@@ -10,8 +10,8 @@ import { useRouter } from 'expo-router'
 const Welcome = () => {
   const router = useRouter()
   return (
-    <ScreenWrapper bg="white">
-      <StatusBar style='dark'/>
+    <ScreenWrapper bg={theme.colors.background}>
+      <StatusBar style='light'/>
       <View style={styles.container}>
 
         {/* welcome image */}
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-around',
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.background,
     paddingHorizontal: wp(4),
   },
   welcomeImage: {

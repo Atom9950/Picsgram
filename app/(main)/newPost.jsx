@@ -1,4 +1,5 @@
-import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { CustomAlert as Alert } from '../../services/alertService'
 import React, { useEffect, useRef, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import  Header  from '../../components/Header'
@@ -14,6 +15,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { getSupabaseFileUrl } from '../../services/imageService'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import { createOrUpdatePost } from '../../services/postService'
+import Transition from 'react-native-screen-transitions';
 
 
 
@@ -116,21 +118,25 @@ const onSubmit = async() => {
   setLoading(false);
 
   if(res.success){
-    Alert.alert("Success", "Post created successfully");
+    Alert.alert("Success", post && post.id ? "Post updated successfully" : "Post created successfully");
     setFile(null);
     bodyRef.current = "";
     editorRef.current?.setContentHTML('')
-    router.back();
+    if(post && post.id){
+      router.dismiss(2);
+    }else{
+      router.back();
+    }
   }else{
     Alert.alert("Error", res.message);
   }
 }
 
   return (
-    <ScreenWrapper bg={'white'}>
+    <ScreenWrapper bg={theme.colors.background}>
       <View style={styles.container}>
       <Header title='Create Post'/>
-      <ScrollView contentContainerStyle={{gap: 20}} showsVerticalScrollIndicator={false}>
+      <Transition.ScrollView contentContainerStyle={{gap: 20}} showsVerticalScrollIndicator={false}>
         {/* avatar */}
         <View style={styles.header}>
           <Avatar
@@ -189,7 +195,7 @@ const onSubmit = async() => {
           If the video file fails to upload, please try uploading a smaller file size.
        </Text>
 
-      </ScrollView>
+      </Transition.ScrollView>
 
       <Button
         buttonStyle={hp(6.2)}
@@ -300,7 +306,7 @@ closeIcon: {
   right: 10,
   padding: 7,
   borderRadius: 50,
-  backgroundColor: 'rgba(255, 255, 255, 1)'
+  backgroundColor: theme.colors.cardBackground,
   // shadowColor: theme.colors.textLight,
   // shadowOffset: { width: 0, height: 3 },
   // shadowOpacity: 0.6,

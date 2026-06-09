@@ -1,20 +1,24 @@
 export const theme = {
   colors: {
-    primary: '#FF7A18',        // warm orange (logo base)
-    primaryDark: '#E85D04',    // deeper orange
+    primary: '#FF5E00',        // vibrant bold orange
+    primaryDark: '#E64A00',    // deeper bold orange
     secondary: '#FF2D8D',      // pink/magenta accent from logo
     secondaryLight: '#FF8FBF',
 
-    dark: '#1F1F1F',
-    darkLight: '#2A2A2A',
-    gray: '#E6E6E6',
+    dark: '#D1D5DB',           // light zinc-300 helper text
+    darkLight: '#2C3136',      // carbon border/divider highlight
+    gray: '#202326',           // dark carbon gray for borders/inputs
 
-    text: '#2B2B2B',
-    textLight: '#8A8A8A',
-    textDark: '#0F0F0F',
+    text: '#F4F4F5',           // zinc-100 near white for primary text
+    textLight: '#9CA3AF',      // zinc-400 slate gray for secondary text
+    textDark: '#FFFFFF',       // pure white for headers/bold text
 
     glow: '#FFB703',           // highlight/glow tone
-    heart: '#FF6B6B',          // soft accent
+    heart: '#FF3E3E',          // bold active red
+    background: '#09090B',     // solid deep obsidian background
+    cardBackground: '#16181A', // Carbon Dark Gray postcard background
+    commentBackground: '#202326', // slightly lighter carbon gray for comment bubbles
+    cardBorder: 'transparent', // borderless postcard style
   },
 
   fonts: {

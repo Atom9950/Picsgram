@@ -1,4 +1,5 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { CustomAlert as Alert } from '../services/alertService'
 import React from 'react'
 import { theme } from '../constants/theme'
 import { hp } from '../helpers/common'
@@ -116,7 +117,7 @@ container: {
 },
 
 content: {
-  backgroundColor: 'rgba(0,0,0,0.06)',
+  backgroundColor: theme.colors.commentBackground,
   flex: 1,
   gap: 5,
   paddingHorizontal: 14,
@@ -127,7 +128,7 @@ content: {
 
 highlight: {
   borderWidth: 0.2,
-  backgroundColor: 'white',
+  backgroundColor: theme.colors.background,
   borderColor: theme.colors.dark,
   shadowColor: theme.colors.dark,
   shadowOffset: { width: 0, height: 0 },

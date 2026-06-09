@@ -1,4 +1,5 @@
-import { Alert, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { CustomAlert as Alert } from '../services/alertService'
 import React, { useEffect, useState } from 'react'
 import { theme } from '../constants/theme'
 import { hp, stripHtmlTags, wp } from '../helpers/common'
@@ -448,9 +449,7 @@ const styles = StyleSheet.create({
       borderCurve: 'continuous',
       padding: 10,
       paddingVertical: 12,
-      backgroundColor: 'white',
-      borderWidth: 0.5,
-      borderColor: theme.colors.gray,
+      backgroundColor: theme.colors.cardBackground,
       shadowColor: '#000'
     },
 

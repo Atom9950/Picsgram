@@ -1,4 +1,5 @@
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { CustomAlert as Alert } from '../../services/alertService'
 import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import { hp, wp } from '../../helpers/common'
@@ -13,6 +14,7 @@ import Button from '../../components/Button'
 import { updateUser } from '../../services/userService'
 import { useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker';
+import Transition from 'react-native-screen-transitions';
 
 
 const EditProfile = () => {
@@ -90,9 +92,9 @@ const EditProfile = () => {
 
   let imageSource = user.image && typeof user.image === 'object' ? user.image.uri : getUserImageSrc(user.image);
   return (
-    <ScreenWrapper bg={'white'}>
+    <ScreenWrapper bg={theme.colors.background}>
       <View style={styles.container}>
-        <ScrollView style={{flex: 1}}>
+        <Transition.ScrollView style={{flex: 1}}>
           <Header title= "Edit Profile" />
 
           {/* form */}
@@ -146,7 +148,7 @@ const EditProfile = () => {
               onPress={onSubmit}
             />
           </View>
-        </ScrollView>
+        </Transition.ScrollView>
       </View>
     </ScreenWrapper>
   )
@@ -181,7 +183,7 @@ cameraIcon: {
   right: -10,
   padding: 8,
   borderRadius: 50,
-  backgroundColor: 'white',
+  backgroundColor: theme.colors.gray,
   shadowColor: theme.colors.textLight,
   shadowOffset: { width: 0, height: 4 },
   shadowOpacity: 0.4,

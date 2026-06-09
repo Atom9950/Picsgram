@@ -1,4 +1,6 @@
-import { Alert, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { CustomAlert as Alert } from '../services/alertService'
+import { StatusBar } from 'expo-status-bar'
 import React, { useRef, useState } from 'react'
 import ScreenWrapper from '../components/ScreenWrapper'
 import BackButton from '../components/BackButton'
@@ -41,8 +43,8 @@ const Login = () => {
   };
 
   return (
-    <ScreenWrapper bg={"white"}>
-      <StatusBar style= "dark"/>
+    <ScreenWrapper bg={theme.colors.background}>
+      <StatusBar style="light"/>
       <View style={styles.container}>
         <BackButton router ={router}/>
 

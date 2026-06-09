@@ -31,6 +31,7 @@ const RichTextEditor = ({
             }}
             style={styles.richBar}
             flatContainerStyle={styles.flatStyle}
+            iconTint={theme.colors.textLight}
             selectedIconTint={theme.colors.primaryDark}
             editor={editorRef}
             disabled={false}
@@ -68,8 +69,9 @@ const styles = StyleSheet.create({
     },
 
     contentStyle: {
-        color: theme.colors.textDark,
+        color: theme.colors.text,
         placeholderColor: 'gray',
+        backgroundColor: theme.colors.background,
     },
 
     flatStyle:{

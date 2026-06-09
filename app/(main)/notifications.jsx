@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { fetchNotifications } from '../../services/notificationService';
 import { getSentAccessRequests } from '../../services/accessRequestService';
@@ -10,6 +10,7 @@ import { useRouter } from 'expo-router';
 import NotificationItem from '../../components/NotificationItem';
 import Header from '../../components/Header'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Transition from 'react-native-screen-transitions';
 
 
 const Notifications = () => {
@@ -71,10 +72,10 @@ const Notifications = () => {
   }
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ScreenWrapper>
+      <ScreenWrapper bg={theme.colors.background}>
         <View style={styles.container}>
           <Header title='Notifications'/>
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.listStyle}>
+          <Transition.ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.listStyle}>
           {
             notifications.map(item => {
               return (
@@ -93,7 +94,7 @@ const Notifications = () => {
             notifications.length === 0 &&
               <Text style={styles.noData}>No notifications yet</Text>
           }
-        </ScrollView>
+        </Transition.ScrollView>
         </View>
       </ScreenWrapper>
     </GestureHandlerRootView>

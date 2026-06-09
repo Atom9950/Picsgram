@@ -266,7 +266,7 @@ const Home = () => {
     }
 
   return (
-    <ScreenWrapper bg={'white'}>
+    <ScreenWrapper bg={theme.colors.background}>
       <View style={styles.container}>
         {/* header */}
         <View style={styles.header}>

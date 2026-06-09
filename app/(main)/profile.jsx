@@ -1,4 +1,5 @@
-import { Alert, Pressable, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Pressable, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { CustomAlert as Alert } from '../../services/alertService'
 import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import { useAuth } from '../../contexts/AuthContext'
@@ -102,7 +103,7 @@ const Profile = () => {
     // Show loading while user data is being fetched
     if(!user) {
       return (
-        <ScreenWrapper bg={'white'}>
+        <ScreenWrapper bg={theme.colors.background}>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Loading />
           </View>
@@ -111,7 +112,7 @@ const Profile = () => {
     }
 
   return (
-    <ScreenWrapper bg={'white'}>
+    <ScreenWrapper bg={theme.colors.background}>
         <FlatList
           data={posts}
           ListHeaderComponent={<UserHeader user={user} router={router} handleLogout={handleLogout} />}
@@ -157,7 +158,7 @@ const Profile = () => {
 
 const UserHeader = ({user, router, handleLogout}) => {
     return(
-        <View style={{flex: 1, backgroundColor: "white", paddingHorizontal: wp(4)}}>
+        <View style={{flex: 1, backgroundColor: theme.colors.background, paddingHorizontal: wp(4)}}>
             <View>
                 <Header title='Profile' mb={30}/>
                 <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -249,7 +250,7 @@ editIcon: {
   right: -12,
   padding: 7,
   borderRadius: 50,
-  backgroundColor: 'white',
+  backgroundColor: theme.colors.gray,
   shadowColor: theme.colors.textLight,
   shadowOffset: { width: 0, height: 4 },
   shadowOpacity: 0.4,
@@ -281,7 +282,7 @@ logoutButton: {
   top: 30,
   padding: 5,
   borderRadius: theme.radius.sm,
-  backgroundColor: '#fee2e2',
+  backgroundColor: 'rgba(255, 62, 62, 0.15)',
 },
 
 listStyle: {
@@ -296,18 +297,18 @@ noPosts: {
 },
 
     accessIndicator: {
-        backgroundColor: '#fef3c7',
+        backgroundColor: 'rgba(255, 183, 3, 0.15)',
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 20,
         borderWidth: 1,
-        borderColor: '#fcd34d',
+        borderColor: theme.colors.glow,
     },
 
     accessText: {
         fontSize: hp(1.4),
         fontWeight: '600',
-        color: '#92400e',
+        color: theme.colors.glow,
     },
 
 })

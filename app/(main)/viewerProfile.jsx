@@ -1,4 +1,5 @@
-import { Alert, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { CustomAlert as Alert } from '../../services/alertService'
 import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import { useAuth } from '../../contexts/AuthContext'
@@ -142,7 +143,7 @@ const ViewerProfile = () => {
 
     if (!hasAccess) {
         return (
-            <ScreenWrapper bg={'white'}>
+            <ScreenWrapper bg={theme.colors.background}>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Loading />
                 </View>
@@ -152,7 +153,7 @@ const ViewerProfile = () => {
 
     if (!profileUser) {
         return (
-            <ScreenWrapper bg={'white'}>
+            <ScreenWrapper bg={theme.colors.background}>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Loading />
                 </View>
@@ -161,7 +162,7 @@ const ViewerProfile = () => {
     }
 
     return (
-        <ScreenWrapper bg={'white'}>
+        <ScreenWrapper bg={theme.colors.background}>
             <FlatList
                 data={posts}
                 ListHeaderComponent={
@@ -215,7 +216,7 @@ const UserHeader = ({ user, router, isGrantedAccess, onBackPress }) => {
     console.log('UserHeader rendering with user:', user);
     
     return (
-        <View style={{ flex: 1, backgroundColor: 'white', paddingHorizontal: wp(4) }}>
+        <View style={{ flex: 1, backgroundColor: theme.colors.background, paddingHorizontal: wp(4) }}>
             <View>
                 <View style={styles.headerTop}>
                     <TouchableOpacity onPress={() => {
@@ -291,18 +292,18 @@ const styles = StyleSheet.create({
     },
 
     accessIndicator: {
-        backgroundColor: '#fef3c7',
+        backgroundColor: 'rgba(255, 183, 3, 0.15)',
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 20,
         borderWidth: 1,
-        borderColor: '#fcd34d',
+        borderColor: theme.colors.glow,
     },
 
     accessText: {
         fontSize: hp(1.4),
         fontWeight: '600',
-        color: '#92400e',
+        color: theme.colors.glow,
     },
 
     avatarContainer: {
@@ -344,6 +345,6 @@ const styles = StyleSheet.create({
             alignSelf:"flex-start",
             padding: 5,
             borderRadius: theme.radius.sm,
-            backgroundColor: "rgba(0,0,0,0.07)",
+            backgroundColor: theme.colors.gray,
         }
 });

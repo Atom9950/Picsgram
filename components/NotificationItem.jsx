@@ -1,4 +1,5 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View, Pressable } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Pressable } from 'react-native'
+import { CustomAlert as Alert } from '../services/alertService'
 import React, { useState, useEffect, useRef } from 'react'
 import { hp, wp } from '../helpers/common'
 import { theme } from '../constants/theme'
@@ -349,7 +350,7 @@ const styles = StyleSheet.create({
   alignItems: 'center',
   justifyContent: 'space-between',
   gap: 12,
-  backgroundColor: 'white',
+  backgroundColor: theme.colors.cardBackground,
   borderWidth: 0.5,
   borderColor: theme.colors.darkLight,
   padding: 15,
