@@ -162,7 +162,7 @@ const UserHeader = ({user, router, handleLogout}) => {
             <View>
                 <Header title='Profile' mb={30}/>
                 <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                    <Icon name="logout" size={20} color={theme.colors.heart}/>
+                    <Icon name="logout" size={18} color={theme.colors.heart}/>
                 </TouchableOpacity>              
             </View>
 
@@ -176,7 +176,7 @@ const UserHeader = ({user, router, handleLogout}) => {
                             rounded={theme.radius.xxl*1.4}
                         />
                         <Pressable style={styles.editIcon} onPress={() => router.push ('editProfile')}>
-                            <Icon name="edit" size={18} color={theme.colors.text}/>
+                            <Icon name="edit" size={16} color={theme.colors.text}/>
                         </Pressable>
 
                     </View>
@@ -190,7 +190,7 @@ const UserHeader = ({user, router, handleLogout}) => {
                     {/* email phone and bio */}
                     <View style={{gap:10}}>
                         <View style={styles.info}>
-                            <Icon name="mail" size={20} color={theme.colors.textLight}/>
+                            <Icon name="mail" size={18} color={theme.colors.textLight}/>
                             <Text style={styles.infoText}>{user && user.email}</Text>
                             <View style={styles.accessIndicator}>
                                 <Text style={styles.accessText}>Only visible to you</Text>
@@ -199,7 +199,7 @@ const UserHeader = ({user, router, handleLogout}) => {
                         {
                             user && user.phoneNumber && (
                                 <View style={styles.info}>
-                                    <Icon name="call" size={20} color={theme.colors.textLight}/>
+                                    <Icon name="call" size={18} color={theme.colors.textLight}/>
                                     <Text style={styles.infoText}>{user && user.phoneNumber}</Text>
                                 </View>
                             )
@@ -259,9 +259,10 @@ editIcon: {
 },
 
 userName: {
-  fontSize: hp(3),
-  fontWeight: '500',
+  fontSize: hp(2.6),
+  fontWeight: theme.fonts.bold,
   color: theme.colors.textDark,
+  letterSpacing: -0.3,
 },
 
 info: {
@@ -271,16 +272,20 @@ info: {
 },
 
 infoText: {
-  fontSize: hp(1.6),
-  fontWeight: '500',
+  fontSize: hp(1.55),
+  fontWeight: theme.fonts.medium,
   color: theme.colors.textLight,
+  letterSpacing: 0.1,
 },
 
 logoutButton: {
   position: 'absolute',
   right: 0,
   top: 30,
-  padding: 5,
+  width: 34,
+  height: 34,
+  justifyContent: 'center',
+  alignItems: 'center',
   borderRadius: theme.radius.sm,
   backgroundColor: 'rgba(255, 62, 62, 0.15)',
 },

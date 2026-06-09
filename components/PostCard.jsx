@@ -336,7 +336,7 @@ const PostCard = ({
           {
             showMoreIcon && (
               <TouchableOpacity onPress={openPostDetails}>
-                <Icon name='threeDotsHorizontal' size={hp(3.4)} strokeWidth={3} color={theme.colors.text} />
+                <Icon name='threeDotsHorizontal' size={hp(2.6)} color={theme.colors.textLight} />
               </TouchableOpacity>
             )
           }
@@ -345,10 +345,10 @@ const PostCard = ({
             showDelete && currentUser.id == item?.userId && (
               <View style={styles.actions}>
                 <TouchableOpacity onPress={() => onEdit(item)}>
-                  <Icon name='edit' size={hp(2.5)} strokeWidth={2} color={theme.colors.text} />
+                  <Icon name='edit' size={hp(2.1)} color={theme.colors.textLight} />
                 </TouchableOpacity>
                  <TouchableOpacity onPress={handleDeletePost}>
-                  <Icon name='delete' size={hp(2.5)} strokeWidth={2} color={theme.colors.heart} />
+                  <Icon name='delete' size={hp(2.1)} color={theme.colors.heart} />
                 </TouchableOpacity>
               </View>
             )
@@ -406,7 +406,7 @@ const PostCard = ({
         <View style={styles.footer}>
           <View style={styles.actions}>
             <TouchableOpacity style={styles.footerButton} onPress={onLike}>
-              <Icon name='heart' size={24} fill={liked ? theme.colors.heart : 'transparent'} strokeWidth={2} color={liked ? theme.colors.heart : theme.colors.textLight} />
+              <Icon name='heart' size={20} fill={liked ? theme.colors.heart : 'transparent'} color={liked ? theme.colors.heart : theme.colors.textLight} />
               <Text style={styles.count}>
                 {likes?.length || 0}
               </Text>
@@ -415,7 +415,7 @@ const PostCard = ({
 
           <View style={styles.actions}>
             <TouchableOpacity style={styles.footerButton} onPress={openPostDetails}>
-              <Icon name='comment' size={24} strokeWidth={2} color={theme.colors.textLight} />
+              <Icon name='comment' size={20} color={theme.colors.textLight} />
               <Text style={styles.count}>
                 {item?.comments?.[0]?.count || 0}
               </Text>
@@ -428,7 +428,7 @@ const PostCard = ({
                 <Loading size='small'/>
               ) : (
                 <TouchableOpacity style={styles.footerButton} onPress={onShare}>
-                  <Icon name='share' size={24} strokeWidth={2} color={theme.colors.textLight} />
+                  <Icon name='share' size={20} color={theme.colors.textLight} />
                 </TouchableOpacity>
               )
             }
@@ -465,15 +465,17 @@ const styles = StyleSheet.create({
     },
 
     username: {
-      fontSize: hp(1.7),
+      fontSize: hp(1.65),
       color: theme.colors.textDark,
-      fontWeight: theme.fonts.medium,
+      fontWeight: theme.fonts.semibold,
+      letterSpacing: 0.1,
     },
 
     postTime: {
-      fontSize: hp(1.4),
+      fontSize: hp(1.3),
       color: theme.colors.textLight,
       fontWeight: theme.fonts.medium,
+      letterSpacing: 0.2,
     },
 
     content: {
@@ -511,7 +513,9 @@ const styles = StyleSheet.create({
     },
 
     count: {
-      color: theme.colors.text,
-      fontSize: hp(1.8)
+      color: theme.colors.textLight,
+      fontSize: hp(1.55),
+      fontWeight: theme.fonts.medium,
+      letterSpacing: 0.3,
     }
 })

@@ -106,7 +106,7 @@ const EditProfile = () => {
               />
 
               <Pressable style={styles.cameraIcon} onPress={onPickImage}>
-                <Icon name="camera" size={20} strokeWidth={2.5} />
+                <Icon name="camera" size={18} />
               </Pressable>
             </View>
 
@@ -114,21 +114,21 @@ const EditProfile = () => {
               Please fill in the following information.
             </Text>
             <Input
-              icon={<Icon name='user'/>}
+              icon={<Icon name='user' size={20}/>}
               placeholder= 'Enter your name'
               value={user.name}
               onChangeText={value => setUser({...user, name: value})}
             />
 
             <Input
-              icon={<Icon name='call'/>}
+              icon={<Icon name='call' size={20}/>}
               placeholder= 'Enter your phone number'
               value={user.phoneNumber}
               onChangeText={value => setUser({...user, phoneNumber: value})}
             />
             
             <Input
-              icon={<Icon name='location'/>}
+              icon={<Icon name='location' size={20}/>}
               placeholder= 'Enter your address'
               value={user.address}
               onChangeText={value => setUser({...user, address: value})}

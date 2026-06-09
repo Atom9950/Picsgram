@@ -1,67 +1,58 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import Home from './Home';
-import Mail from './Mail';
-import Lock from './Lock';
-import User from './User';
-import Heart from './Heart';
-import Plus from './Plus';
-import Search from './Search';
-import Location from './Location';
-import Call from './Call';
+import React from 'react';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import { theme } from '../../constants/theme';
-import Camera from './Camera';
-import Edit from './Edit';
-import ArrowLeft from './ArrowLeft';
-import ThreeDotsCircle from './ThreeDotsCircle';
-import ThreeDotsHorizontal from './ThreeDotsHorizontal';
-import Comment from './Comment';
-import Share from './Share';
-import Send from './Send';
-import Delete from './Delete';
-import Logout from './logout';
-import Image from './Image';
-import Video from './Video';
-import Eye from './Eye';
-import EyeOff from './EyeOff';
 
-const icons = {
-    home: Home,
-    mail: Mail,
-    lock: Lock,
-    user: User,
-    heart: Heart,
-    plus: Plus,
-    search: Search,
-    location: Location,
-    call: Call,
-    camera: Camera,
-    edit: Edit,
-    arrowLeft: ArrowLeft,
-    threeDotsCircle: ThreeDotsCircle,
-    threeDotsHorizontal: ThreeDotsHorizontal,
-    comment: Comment,
-    share: Share,
-    send: Send,
-    delete: Delete,
-    logout: Logout,
-    image: Image,
-    video: Video,
-    eye: Eye,
-    eyeOff: EyeOff,
-}
+// Mapping from app icon names → Feather icon names
+const iconMap = {
+  home: 'home',
+  mail: 'mail',
+  lock: 'lock',
+  user: 'user',
+  plus: 'plus',
+  search: 'search',
+  location: 'map-pin',
+  call: 'phone',
+  camera: 'camera',
+  edit: 'edit-2',
+  arrowLeft: 'arrow-left',
+  threeDotsCircle: 'more-horizontal',
+  threeDotsHorizontal: 'more-horizontal',
+  comment: 'message-circle',
+  share: 'share-2',
+  send: 'send',
+  delete: 'trash-2',
+  logout: 'log-out',
+  image: 'image',
+  video: 'video',
+  eye: 'eye',
+  eyeOff: 'eye-off',
+};
 
-const Icon = ({name, ...props}) => {
-    const IconComponent = icons[name];
-  return (
-    <IconComponent
-        height={props.size || 24}
-        width={props.size || 24}
-        strokeWidth={props.strokeWidth || 1.9}
-        color={theme.colors.textLight}
+const Icon = ({ name, size = 22, color, fill, strokeWidth, ...props }) => {
+  const resolvedColor = color || theme.colors.textLight;
+
+  // Heart icon: Ionicons has reliable heart / heart-outline
+  if (name === 'heart') {
+    const isFilled = fill && fill !== 'transparent';
+    return (
+      <Ionicons
+        name={isFilled ? 'heart' : 'heart-outline'}
+        size={size}
+        color={isFilled ? (color || theme.colors.heart) : resolvedColor}
         {...props}
+      />
+    );
+  }
+
+  const iconName = iconMap[name] || name;
+  return (
+    <Feather
+      name={iconName}
+      size={size}
+      color={resolvedColor}
+      {...props}
     />
-  )
-}
+  );
+};
 
 export default Icon;

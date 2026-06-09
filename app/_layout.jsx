@@ -8,11 +8,95 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import { getUserData } from '../services/userService'
 import AlertModal from '../components/AlertModal'
+import { useFonts } from 'expo-font'
+import React from 'react'
+import { Text, TextInput } from 'react-native'
+
+const customFontMap = {
+  'normal': 'PlusJakartaSans-Regular',
+  '400': 'PlusJakartaSans-Regular',
+  '500': 'PlusJakartaSans-Medium',
+  'medium': 'PlusJakartaSans-Medium',
+  '600': 'PlusJakartaSans-SemiBold',
+  'semibold': 'PlusJakartaSans-SemiBold',
+  '700': 'PlusJakartaSans-Bold',
+  'bold': 'PlusJakartaSans-Bold',
+  '800': 'PlusJakartaSans-ExtraBold',
+  'extrabold': 'PlusJakartaSans-ExtraBold',
+};
+
+const resolveFont = (style) => {
+  if (!style) return { fontFamily: 'PlusJakartaSans-Regular' };
+  const flat = StyleSheet.flatten(style) || {};
+  const weight = flat.fontWeight ? String(flat.fontWeight).toLowerCase() : 'normal';
+  const fontFamily = customFontMap[weight] || 'PlusJakartaSans-Regular';
+  return { fontFamily, fontWeight: undefined };
+};
+
+const initTypography = () => {
+  if (Text.render) {
+    const oldRender = Text.render;
+    Text.render = function (props, ref) {
+      const origin = oldRender.call(this, props, ref);
+      const resolved = resolveFont(props.style);
+      return React.cloneElement(origin, {
+        style: [props.style, resolved]
+      });
+    };
+  } else if (Text.prototype && Text.prototype.render) {
+    const oldRender = Text.prototype.render;
+    Text.prototype.render = function () {
+      const origin = oldRender.call(this);
+      const resolved = resolveFont(this.props.style);
+      return React.cloneElement(origin, {
+        style: [this.props.style, resolved]
+      });
+    };
+  }
+
+  if (TextInput.render) {
+    const oldRender = TextInput.render;
+    TextInput.render = function (props, ref) {
+      const origin = oldRender.call(this, props, ref);
+      const resolved = resolveFont(props.style);
+      return React.cloneElement(origin, {
+        style: [props.style, resolved]
+      });
+    };
+  } else if (TextInput.prototype && TextInput.prototype.render) {
+    const oldRender = TextInput.prototype.render;
+    TextInput.prototype.render = function () {
+      const origin = oldRender.call(this);
+      const resolved = resolveFont(this.props.style);
+      return React.cloneElement(origin, {
+        style: [this.props.style, resolved]
+      });
+    };
+  }
+};
+
+try {
+  initTypography();
+} catch (e) {
+  console.warn('Typography override failed:', e);
+}
 
 const MyStack = withScreenTransitions(createNativeStackNavigator());
 const Stack = withLayoutContext(MyStack.Navigator);
 
 const _layout = () => {
+  const [fontsLoaded] = useFonts({
+    'PlusJakartaSans-Regular': require('../assets/fonts/PlusJakartaSans-Regular.ttf'),
+    'PlusJakartaSans-Medium': require('../assets/fonts/PlusJakartaSans-Medium.ttf'),
+    'PlusJakartaSans-SemiBold': require('../assets/fonts/PlusJakartaSans-SemiBold.ttf'),
+    'PlusJakartaSans-Bold': require('../assets/fonts/PlusJakartaSans-Bold.ttf'),
+    'PlusJakartaSans-ExtraBold': require('../assets/fonts/PlusJakartaSans-ExtraBold.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>

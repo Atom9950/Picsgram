@@ -58,20 +58,20 @@ const Login = () => {
         <View style={styles.form}>
           <Text style={{fontSize:hp(1.5), color: theme.colors.text}}>Please Login to continue</Text>
           <Input
-            icon={<Icon name='mail' size={26} strokeWidth={1.6}/>}
+            icon={<Icon name='mail' size={20}/>}
             placeholder="Enter your email"
             onChangeText={value => emailRef.current = value}
           />
           <Input
-            icon={<Icon name='lock' size={26} strokeWidth={1.6}/>}
+            icon={<Icon name='lock' size={20}/>}
             placeholder="Enter your password"
             secureTextEntry={!passwordVisible}
             onChangeText={value => passwordRef.current = value}
             showPasswordToggle={true}
             passwordVisible={passwordVisible}
             onTogglePassword={() => setPasswordVisible(!passwordVisible)}
-            eyeIcon={<Icon name='eye' size={26} strokeWidth={1.6}/>}
-            eyeOffIcon={<Icon name='eyeOff' size={26} strokeWidth={1.6}/>}
+            eyeIcon={<Icon name='eye' size={20}/>}
+            eyeOffIcon={<Icon name='eyeOff' size={20}/>}
           />
           <Text style={styles.forgotPassword}> Forgotten password?</Text>
           {/* button */}

@@ -174,7 +174,7 @@ const onSubmit = async() => {
               }
 
               <Pressable style={styles.closeIcon} onPress={() => setFile(null)}>
-                <Icon name="delete" size={20} color={theme.colors.heart} />
+                <Icon name="delete" size={18} color={theme.colors.heart} />
               </Pressable>
             </View>
           )
@@ -184,10 +184,10 @@ const onSubmit = async() => {
           <Text style={styles.addImageText}>Add media</Text>
           <View style= {styles.mediaIcons}>
             <TouchableOpacity onPress={() => onPick(true)}>
-              <Icon name="image" size={30} color={theme.colors.dark}/>
+              <Icon name="image" size={22} color={theme.colors.dark}/>
             </TouchableOpacity>
              <TouchableOpacity onPress={() => onPick(false)}>
-              <Icon name="video" size={33} color={theme.colors.dark}/>
+              <Icon name="video" size={22} color={theme.colors.dark}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -198,7 +198,6 @@ const onSubmit = async() => {
       </Transition.ScrollView>
 
       <Button
-        buttonStyle={hp(6.2)}
         title= {post && post.id? 'Update': 'Post'}
         loading={loading}
         hasShadow={false}

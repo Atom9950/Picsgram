@@ -279,7 +279,7 @@ const Home = () => {
                 router.push('notifications')
               }
             }>
-              <Icon name='heart' size={hp(3.2)} strokeWidth={2} color={theme.colors.text} />
+              <Icon name='heart' size={hp(2.8)} color={theme.colors.text} />
               {
                 hasUnreadNotification && (
                   <View style={styles.notificationDot} />
@@ -287,7 +287,7 @@ const Home = () => {
               }
             </Pressable>
             <Pressable onPress={() => router.push('newPost')}>
-              <Icon name='plus' size={hp(3.2)} strokeWidth={2} color={theme.colors.text} />
+              <Icon name='plus' size={hp(2.8)} color={theme.colors.text} />
             </Pressable>
             <Pressable onPress={() => router.push('profile')}>
               <Avatar
@@ -359,9 +359,10 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    color: theme.colors.text,
-    fontSize: hp(3.2),
+    color: theme.colors.textDark,
+    fontSize: hp(2.8),
     fontWeight: theme.fonts.bold,
+    letterSpacing: -0.5,
   },
 
   avatarImage: {
