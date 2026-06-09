@@ -1,2 +1,2 @@
-export const supabaseUrl = "https://inbmwmhlzvlwoatzhsdi.supabase.co";
-export const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYm13bWhsenZsd29hdHpoc2RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5MDU0NDEsImV4cCI6MjA4MTQ4MTQ0MX0.9oS5dKA1EcnVvSI1imgeTT5VIuLP1-JAo2r7geeeGB8"
+export const supabaseUrl = "https://rzloehdtlnkmizybhaog.supabase.co";
+export const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6bG9laGR0bG5rbWl6eWJoYW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDEyNzIsImV4cCI6MjA5NjQ3NzI3Mn0.9vb-UWofnH6uTBMTHlqS0dGKRmBw5eF_UD7dB6nxW8c"
