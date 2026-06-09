@@ -342,11 +342,11 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    color: theme.colors.textDark,
-    fontSize: hp(2.8),
-    fontWeight: theme.fonts.bold,
-    letterSpacing: -0.5,
-  },
+  color: theme.colors.textDark,
+  fontSize: hp(3.8),
+  fontFamily: 'GrandHotel',
+  letterSpacing: 0.3,
+},
 
   avatarImage: {
     height: hp(4.3),

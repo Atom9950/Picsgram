@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
   },
   title:{
     color: theme.colors.text,
-    fontSize: hp(4),
+    fontFamily: 'GrandHotel',
+    fontSize: hp(5),
     textAlign:'center',
-    fontWeight: theme.fonts.extraBold
   },
   punchline:{
     color: theme.colors.text,
