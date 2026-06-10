@@ -242,13 +242,13 @@ const UserHeader = ({ user, router, isGrantedAccess, onBackPress }) => {
                         />
                     </View>
 
-                    {/* username and address */}
+                    {/* username and bio */}
                     <View style={{ alignItems: 'center', gap: 4 }}>
                         <Text style={styles.userName}>{user?.name || 'Name'}</Text>
-                        <Text style={styles.infoText}>{user?.address || ''}</Text>
+                        <Text style={styles.infoText}>{user?.bio || ''}</Text>
                     </View>
 
-                    {/* email phone and bio */}
+                    {/* email, phone and address */}
                     <View style={{ gap: 10 }}>
                         {user?.email && (
                             <View style={styles.info}>
@@ -263,9 +263,10 @@ const UserHeader = ({ user, router, isGrantedAccess, onBackPress }) => {
                             </View>
                         )}
 
-                        {user?.bio && (
+                        {user?.address && (
                             <View style={styles.info}>
-                                <Text style={styles.infoText}>{user.bio}</Text>
+                                <Icon name="location" size={20} color='white' />
+                                <Text style={styles.infoText}>{user.address}</Text>
                             </View>
                         )}
                     </View>

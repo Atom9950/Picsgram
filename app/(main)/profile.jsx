@@ -186,13 +186,13 @@ const UserHeader = ({user, router, handleLogout}) => {
 
                     </View>
 
-                    {/* username and address */}
+                    {/* username and bio */}
                     <View style ={{alignItems: 'center', gap: 4}}>
                         <Text style={styles.userName}>{user && user.name}</Text>
-                        <Text style={styles.infoText}>{user && user.address}</Text>
+                        <Text style={styles.infoText}>{user && user.bio}</Text>
                     </View>
 
-                    {/* email phone and bio */}
+                    {/* email, phone and address */}
                     <View style={{gap:10}}>
                         <View style={styles.info}>
                             <Icon name="mail" size={18} color='white'/>
@@ -211,10 +211,10 @@ const UserHeader = ({user, router, handleLogout}) => {
                         }
 
                         {
-                            user && user.bio && (
-                                
+                            user && user.address && (
                                 <View style={styles.info}>
-                                    <Text style={styles.infoText}>{user && user.bio}</Text>
+                                    <Icon name="location" size={18} color='white'/>
+                                    <Text style={styles.infoText}>{user && user.address}</Text>
                                 </View>
                             )
                         }
