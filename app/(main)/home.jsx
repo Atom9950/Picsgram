@@ -16,6 +16,7 @@ import FloatingDock from '../../components/FloatingDock'
 
 
 var limit = 0;
+
 const Home = () => {
 
     const {user, setAuth} = useAuth();
