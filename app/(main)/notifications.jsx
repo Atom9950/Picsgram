@@ -11,6 +11,7 @@ import NotificationItem from '../../components/NotificationItem';
 import Header from '../../components/Header'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Transition from 'react-native-screen-transitions';
+import FloatingDock from '../../components/FloatingDock';
 
 
 const Notifications = () => {
@@ -96,6 +97,12 @@ const Notifications = () => {
           }
         </Transition.ScrollView>
         </View>
+        {/* Floating Dock */}
+        <FloatingDock
+          router={router}
+          user={user}
+          activeTab="notifications"
+        />
       </ScreenWrapper>
     </GestureHandlerRootView>
   )
@@ -110,7 +117,8 @@ const styles = StyleSheet.create({
   },
 
   listStyle: {
-    paddingVertical: 20,
+    paddingTop: 20,
+    paddingBottom: 120,
     gap: 10,
   },
 

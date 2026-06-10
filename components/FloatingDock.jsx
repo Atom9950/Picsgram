@@ -1,53 +1,156 @@
 import { Pressable, StyleSheet, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { BlurView } from 'expo-blur'
 import Icon from '@/assets/icons'
 import Avatar from './Avatar'
 import { theme } from '../constants/theme'
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, withRepeat, withTiming, Easing } from 'react-native-reanimated'
+import { wp } from '../helpers/common'
 
 const FloatingDock = ({
   router,
   user,
   hasUnreadNotification,
   onNotificationsPress,
+  onHomePress,
+  activeTab = 'home', // default active tab is home
 }) => {
   const insets = useSafeAreaInsets()
   const bottomOffset = Math.max(insets.bottom, 16) + 12
 
+  // Shared values for squishy interactive micro-animations
+  const homeScale = useSharedValue(1)
+  const notifScale = useSharedValue(1)
+  const plusScale = useSharedValue(1)
+  const profileScale = useSharedValue(1)
+
+  // Shared value for breathing pulse animation on primary 'plus' button
+  const plusPulse = useSharedValue(1)
+
+  useEffect(() => {
+    plusPulse.value = withRepeat(
+      withTiming(1.04, { duration: 1500, easing: Easing.bezier(0.25, 0.1, 0.25, 1) }),
+      -1,
+      true
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Animated styles
+  const homeAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: withSpring(homeScale.value, { damping: 10, stiffness: 200 }) }],
+  }))
+  const notifAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: withSpring(notifScale.value, { damping: 10, stiffness: 200 }) }],
+  }))
+  const plusAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: withSpring(plusScale.value * plusPulse.value, { damping: 10, stiffness: 200 }) }
+    ],
+  }))
+  const profileAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: withSpring(profileScale.value, { damping: 10, stiffness: 200 }) }],
+  }))
+
+  const handleHomePressInternal = () => {
+    if (activeTab === 'home') {
+      if (onHomePress) onHomePress()
+    } else {
+      router.push('(main)/home')
+    }
+  }
+
+  const handleNotificationsPressInternal = () => {
+    if (activeTab === 'notifications') {
+      // already on notifications
+    } else {
+      if (onNotificationsPress) {
+        onNotificationsPress()
+      } else {
+        router.push('(main)/notifications')
+      }
+    }
+  }
+
+  const handleProfilePressInternal = () => {
+    if (activeTab === 'profile') {
+      // already on profile
+    } else {
+      router.push('(main)/profile')
+    }
+  }
+
+  const activeColor = theme.colors.primary; // brand vibrant orange
+  const inactiveColor = 'rgba(255, 255, 255, 0.65)';
+
   return (
     <BlurView
-      intensity={40}
+      intensity={70}
       tint="dark"
       style={[styles.dock, { bottom: bottomOffset }]}
     >
       <View style={styles.overlay} />
-      <View style={styles.specular} />
 
+      {/* Home */}
       <Pressable
-        onPress={onNotificationsPress}
-        style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
+        onPressIn={() => { homeScale.value = 0.82 }}
+        onPressOut={() => { homeScale.value = 1.0 }}
+        onPress={handleHomePressInternal}
+        style={[styles.tabButton, activeTab === 'home' && styles.activeTabPill]}
       >
-        <Icon name='heart' size={22} color='rgba(255,255,255,0.82)' />
-        {hasUnreadNotification && <View style={styles.dot} />}
+        <Animated.View style={[homeAnimatedStyle, { alignItems: 'center', justifyContent: 'center' }]}>
+          <Icon
+            name='home'
+            size={22}
+            color={activeTab === 'home' ? activeColor : inactiveColor}
+          />
+        </Animated.View>
       </Pressable>
 
-      <View style={styles.divider} />
-
+      {/* Notifications */}
       <Pressable
+        onPressIn={() => { notifScale.value = 0.82 }}
+        onPressOut={() => { notifScale.value = 1.0 }}
+        onPress={handleNotificationsPressInternal}
+        style={[styles.tabButton, activeTab === 'notifications' && styles.activeTabPill]}
+      >
+        <Animated.View style={[notifAnimatedStyle, { alignItems: 'center', justifyContent: 'center' }]}>
+          <Icon
+            name='heart'
+            size={22}
+            color={activeTab === 'notifications' ? activeColor : inactiveColor}
+          />
+          {hasUnreadNotification && activeTab !== 'notifications' && <View style={styles.dot} />}
+        </Animated.View>
+      </Pressable>
+
+      {/* New Post */}
+      <Pressable
+        onPressIn={() => { plusScale.value = 0.82 }}
+        onPressOut={() => { plusScale.value = 1.0 }}
         onPress={() => router.push('newPost')}
-        style={({ pressed }) => [styles.primaryItem, pressed && styles.primaryPressed]}
+        style={[styles.tabButton, activeTab === 'newPost' && styles.activeTabPill]}
       >
-        <Icon name='plus' size={22} color='#FFFFFF' />
+        <Animated.View style={[plusAnimatedStyle, { alignItems: 'center', justifyContent: 'center' }]}>
+          <Icon
+            name='plus'
+            size={22}
+            color={activeTab === 'newPost' ? activeColor : inactiveColor}
+          />
+        </Animated.View>
       </Pressable>
 
-      <View style={styles.divider} />
-
+      {/* Profile */}
       <Pressable
-        onPress={() => router.push('profile')}
-        style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
+        onPressIn={() => { profileScale.value = 0.82 }}
+        onPressOut={() => { profileScale.value = 1.0 }}
+        onPress={handleProfilePressInternal}
+        style={[styles.tabButton, activeTab === 'profile' && styles.activeTabPill]}
       >
-        <Avatar uri={user?.image} size={34} />
+        <Animated.View style={[profileAnimatedStyle, { alignItems: 'center', justifyContent: 'center' }, activeTab === 'profile' && styles.activeAvatarWrapper]}>
+          <Avatar uri={user?.image} size={26} />
+        </Animated.View>
       </Pressable>
 
     </BlurView>
@@ -58,89 +161,60 @@ export default FloatingDock
 
 const styles = StyleSheet.create({
   dock: {
-  position: 'absolute',
-  alignSelf: 'center',
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: 6,
-  borderRadius: 100,
-  paddingVertical: 10,
-  paddingHorizontal: 24,
-  overflow: 'hidden',
-  borderWidth: 0.5,
-  borderColor: 'rgba(255, 255, 255, 0.22)',
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 8 },
-  shadowOpacity: 0.45,
-  shadowRadius: 24,
-  elevation: 20,
-},
+    position: 'absolute',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 5,
+    paddingHorizontal: 6,
+    borderRadius: 100,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.45,
+    shadowRadius: 20,
+    elevation: 12,
+    width: wp(80),
+    maxWidth: 340,
+  },
 
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(20, 20, 22, 0.72)',
+    backgroundColor: 'rgba(10, 10, 12, 0.95)',
     borderRadius: 100,
   },
 
-  specular: {
-    position: 'absolute',
-    top: 0,
-    left: 16,
-    right: 16,
-    height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+  tabButton: {
+    flex: 1,
+    height: 44,
     borderRadius: 100,
-  },
-
-  item: {
-    width: 52,
-    height: 52,
-    borderRadius: 100,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
   },
 
-  itemPressed: {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    transform: [{ scale: 0.9 }],
+  activeTabPill: {
+    backgroundColor: 'rgba(255, 94, 0, 0.15)', // orange translucent highlight pill
   },
 
-primaryItem: {
-  width: 48,
-  height: 48,
-  borderRadius: 100,
-  marginHorizontal: 4,
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: theme.colors.primary,
-  shadowColor: theme.colors.primary,
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.5,
-  shadowRadius: 12,
-  elevation: 8,
-},
-
-  primaryPressed: {
-    opacity: 0.85,
-    transform: [{ scale: 0.93 }],
-  },
-
-  divider: {
-    width: 0.5,
-    height: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    marginHorizontal: 2,
+  activeAvatarWrapper: {
+    borderWidth: 1.5,
+    borderColor: theme.colors.primary,
+    borderRadius: 100,
+    padding: 1,
   },
 
   dot: {
     position: 'absolute',
-    top: 9,
-    right: 9,
-    width: 10,
-    height: 10,
-    borderRadius: 10,
-    backgroundColor: '#FF453A',
+    bottom: -2,
+    right: -2,
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: '#FF3E3E',
     borderWidth: 1.5,
-    borderColor: 'rgba(20, 20, 22, 0.72)',
+    borderColor: '#0A0A0C',
   },
 })

@@ -30,6 +30,11 @@ const Home = () => {
     
     // Store comment to post mapping for deletion events
     const commentPostMapRef = useRef({});
+    const listRef = useRef(null);
+
+    const handleHomePress = () => {
+      listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }
 
     const handlePostEvent = async(payload) => {
       // console.log('HOME - Post event received:', payload);
@@ -275,6 +280,7 @@ const Home = () => {
 
         {/* posts */}
         <FlatList
+          ref={listRef}
           data={posts}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listStyle}
@@ -326,6 +332,8 @@ const Home = () => {
           await markNotificationsAsRead(user.id);
           router.push('notifications');
         }}
+        onHomePress={handleHomePress}
+        activeTab="home"
       />
     </ScreenWrapper>
   )

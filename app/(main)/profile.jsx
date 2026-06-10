@@ -14,6 +14,7 @@ import { fetchPosts } from '../../services/postService'
 import { FlatList } from 'react-native'
 import Loading from '../../components/Loading'
 import PostCard from '../../components/PostCard'
+import FloatingDock from '../../components/FloatingDock'
 
 const Profile = () => {
     const {user, setAuth} = useAuth();
@@ -151,7 +152,12 @@ const Profile = () => {
             </View>
           )}
         />
-      
+         {/* Floating Dock */}
+         <FloatingDock
+           router={router}
+           user={user}
+           activeTab="profile"
+         />
     </ScreenWrapper>
   )
 }
@@ -291,7 +297,7 @@ logoutButton: {
 
 listStyle: {
   paddingHorizontal: wp(4),
-  paddingBottom: 30,
+  paddingBottom: 120,
 },
 
 noPosts: {
