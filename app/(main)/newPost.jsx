@@ -183,10 +183,10 @@ const onSubmit = async() => {
           <Text style={styles.addImageText}>Add media</Text>
           <View style= {styles.mediaIcons}>
             <TouchableOpacity onPress={() => onPick(true)}>
-              <Icon name="image" size={22} color={theme.colors.dark}/>
+              <Icon name="image" size={22} color='white'/>
             </TouchableOpacity>
              <TouchableOpacity onPress={() => onPick(false)}>
-              <Icon name="video" size={22} color={theme.colors.dark}/>
+              <Icon name="video" size={22} color='white'/>
             </TouchableOpacity>
           </View>
         </View>

@@ -426,7 +426,7 @@ const PostCard = ({
           {
             showMoreIcon && (
               <TouchableOpacity onPress={openPostDetails} style={styles.moreIconBtn}>
-                <Icon name='threeDotsHorizontal' size={hp(2.4)} color={theme.colors.textLight} />
+                <Icon name='threeDotsHorizontal' size={hp(2.4)} color='white' />
               </TouchableOpacity>
             )
           }
@@ -435,7 +435,7 @@ const PostCard = ({
             showDelete && currentUser.id == item?.userId && (
               <View style={styles.actions}>
                 <TouchableOpacity onPress={() => onEdit(item)} style={styles.actionIconBtn}>
-                  <Icon name='edit' size={hp(2.1)} color={theme.colors.textLight} />
+                  <Icon name='edit' size={hp(2.1)} color='white' />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleDeletePost} style={[styles.actionIconBtn, styles.deleteIconBtn]}>
                   <Icon name='delete' size={hp(2.1)} color={theme.colors.heart} />
@@ -506,7 +506,7 @@ const PostCard = ({
                 name='heart'
                 size={22}
                 fill={liked ? theme.colors.heart : 'transparent'}
-                color={liked ? theme.colors.heart : theme.colors.textLight}
+                color={liked ? theme.colors.heart : 'white'}
               />
               <Text style={[styles.pillCount, liked && styles.pillTextLiked]}>
                 {likes?.length || 0}
@@ -515,7 +515,7 @@ const PostCard = ({
 
             {/* Comment Pill */}
             <TouchableOpacity style={styles.pillButton} onPress={openPostDetails}>
-              <Icon name='comment' size={22} color={theme.colors.textLight} />
+              <Icon name='comment' size={22} color='white' />
               <Text style={styles.pillCount}>
                 {item?.comments?.[0]?.count || 0}
               </Text>
@@ -529,7 +529,7 @@ const PostCard = ({
                 </View>
               ) : (
                 <TouchableOpacity style={styles.pillButton} onPress={onShare}>
-                  <Icon name='share' size={22} color={theme.colors.textLight} />
+                  <Icon name='share' size={22} color='white' />
                 </TouchableOpacity>
               )
             }
@@ -667,7 +667,7 @@ const styles = StyleSheet.create({
   },
 
   pillCount: {
-    color: theme.colors.textLight,
+    color: 'white',
     fontSize: hp(1.5),
     fontWeight: theme.fonts.semibold,
   },

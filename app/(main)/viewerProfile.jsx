@@ -252,13 +252,13 @@ const UserHeader = ({ user, router, isGrantedAccess, onBackPress }) => {
                     <View style={{ gap: 10 }}>
                         {user?.email && (
                             <View style={styles.info}>
-                                <Icon name="mail" size={20} color={theme.colors.textLight} />
+                                <Icon name="mail" size={20} color='white' />
                                 <Text style={styles.infoText}>{user.email}</Text>
                             </View>
                         )}
                         {user?.phoneNumber && (
                             <View style={styles.info}>
-                                <Icon name="call" size={20} color={theme.colors.textLight} />
+                                <Icon name="call" size={20} color='white' />
                                 <Text style={styles.infoText}>{user.phoneNumber}</Text>
                             </View>
                         )}

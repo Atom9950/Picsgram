@@ -195,7 +195,7 @@ const UserHeader = ({user, router, handleLogout}) => {
                     {/* email phone and bio */}
                     <View style={{gap:10}}>
                         <View style={styles.info}>
-                            <Icon name="mail" size={18} color={theme.colors.textLight}/>
+                            <Icon name="mail" size={18} color='white'/>
                             <Text style={styles.infoText}>{user && user.email}</Text>
                             <View style={styles.accessIndicator}>
                                 <Text style={styles.accessText}>Only visible to you</Text>
@@ -204,7 +204,7 @@ const UserHeader = ({user, router, handleLogout}) => {
                         {
                             user && user.phoneNumber && (
                                 <View style={styles.info}>
-                                    <Icon name="call" size={18} color={theme.colors.textLight}/>
+                                    <Icon name="call" size={18} color='white'/>
                                     <Text style={styles.infoText}>{user && user.phoneNumber}</Text>
                                 </View>
                             )

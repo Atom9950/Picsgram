@@ -31,17 +31,28 @@ const iconMap = {
 const Icon = ({ name, size = 22, color, fill, strokeWidth, ...props }) => {
   const resolvedColor = color || theme.colors.textLight;
 
-  // Heart icon: Ionicons has reliable heart / heart-outline
+  // Heart icon: Ionicons has reliable filled heart, Feather has matching stroke outline
   if (name === 'heart') {
     const isFilled = fill && fill !== 'transparent';
-    return (
-      <Ionicons
-        name={isFilled ? 'heart' : 'heart-outline'}
-        size={size}
-        color={isFilled ? (color || theme.colors.heart) : resolvedColor}
-        {...props}
-      />
-    );
+    if (isFilled) {
+      return (
+        <Ionicons
+          name='heart'
+          size={size}
+          color={color || theme.colors.heart}
+          {...props}
+        />
+      );
+    } else {
+      return (
+        <Feather
+          name='heart'
+          size={size}
+          color={resolvedColor}
+          {...props}
+        />
+      );
+    }
   }
 
   const iconName = iconMap[name] || name;

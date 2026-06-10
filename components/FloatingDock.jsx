@@ -1,12 +1,12 @@
-import { Pressable, StyleSheet, View } from 'react-native'
-import React, { useEffect } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { BlurView } from 'expo-blur'
 import Icon from '@/assets/icons'
-import Avatar from './Avatar'
+import { BlurView } from 'expo-blur'
+import { useEffect } from 'react'
+import { Pressable, StyleSheet, View } from 'react-native'
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { theme } from '../constants/theme'
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, withRepeat, withTiming, Easing } from 'react-native-reanimated'
 import { wp } from '../helpers/common'
+import Avatar from './Avatar'
 
 const FloatingDock = ({
   router,
@@ -82,7 +82,7 @@ const FloatingDock = ({
   }
 
   const activeColor = theme.colors.primary; // brand vibrant orange
-  const inactiveColor = 'rgba(255, 255, 255, 0.65)';
+  const inactiveColor = 'white';
 
   return (
     <BlurView
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: 'rgba(255, 255, 255, 0.16)',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.45,
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
 
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(10, 10, 12, 0.95)',
+    backgroundColor: 'rgba(24, 26, 28, 0.85)',
     borderRadius: 100,
   },
 
