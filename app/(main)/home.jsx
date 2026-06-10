@@ -13,6 +13,7 @@ import Loading from '../../components/Loading'
 import { getUserData } from '../../services/userService'
 import { checkUnreadNotifications, markNotificationsAsRead } from '../../services/notificationService'
 import FloatingDock from '../../components/FloatingDock'
+import Icon from '@/assets/icons'
 
 
 var limit = 0;
@@ -304,8 +305,12 @@ const Home = () => {
               <Loading/>
             </View>
           ): (
-            <View style={{marginVertical:30}}>
-              <Text style={styles.noPosts}>No more posts</Text>
+            <View style={styles.noPostsContainer}>
+              <View style={styles.noPostsIconContainer}>
+                <Icon name="check" size={20} color={theme.colors.primary} />
+              </View>
+              <Text style={styles.noPostsTitle}>{"You're all caught up"}</Text>
+              <Text style={styles.noPostsSubtitle}>{"You've seen all the latest posts"}</Text>
             </View>
           )}
         />
@@ -371,9 +376,33 @@ const styles = StyleSheet.create({
     paddingBottom: 110,
   },
 
-  noPosts: {
-    fontSize: hp(2),
+  noPostsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 30,
+    paddingHorizontal: 20,
+    gap: 6,
+  },
+
+  noPostsIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 94, 0, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },
+
+  noPostsTitle: {
+    fontSize: hp(1.8),
+    fontWeight: theme.fonts.bold,
+    color: theme.colors.textDark,
+  },
+
+  noPostsSubtitle: {
+    fontSize: hp(1.4),
+    color: theme.colors.textLight,
     textAlign: 'center',
-    color: theme.colors.text,
   },
 })
