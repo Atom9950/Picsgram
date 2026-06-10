@@ -201,6 +201,7 @@ const MainLayout = () => {
         name="(main)/viewerProfile"
         options={{
           ...Transition.Presets.ElasticCard({ gestureDirection: "vertical" }),
+          gestureEnabled: false,
         }}
       />
     </Stack>

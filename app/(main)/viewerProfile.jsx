@@ -42,7 +42,7 @@ const ViewerProfile = () => {
             }
 
             try {
-                const result = await checkProfileAccess(currentUser.id, userId);
+                const result = await checkProfileAccess(currentUser.id, userId, grantId);
                 console.log('checkProfileAccess result:', result);
                 
                 if (result.success && result.hasAccess) {
@@ -79,7 +79,7 @@ const ViewerProfile = () => {
         };
 
         checkAccess();
-    }, [currentUser?.id, userId]);
+    }, [currentUser?.id, userId, grantId]);
 
     // Load posts when user is available
     useEffect(() => {

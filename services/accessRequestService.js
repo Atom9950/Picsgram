@@ -152,14 +152,19 @@ export const rejectAccessRequest = async (requestId) => {
 };
 
 // Check if profile access is valid and not expired
-export const checkProfileAccess = async (grantedTo, grantedBy) => {
+export const checkProfileAccess = async (grantedTo, grantedBy, grantId = null) => {
     try {
-        const { data, error } = await supabase
+        let query = supabase
             .from('profile_access_grants')
-            .select('*')
-            .eq('grantedto', grantedTo)
-            .eq('grantedby', grantedBy)
-            .maybeSingle();
+            .select('*');
+
+        if (grantId) {
+            query = query.eq('id', grantId).eq('grantedto', grantedTo).eq('grantedby', grantedBy);
+        } else {
+            query = query.eq('grantedto', grantedTo).eq('grantedby', grantedBy);
+        }
+
+        const { data, error } = await query.maybeSingle();
 
         if (error) {
             return { success: false, hasAccess: false };

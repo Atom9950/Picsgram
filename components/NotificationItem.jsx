@@ -23,6 +23,7 @@ const NotificationItem = ({
 ) => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [isProcessed, setIsProcessed] = useState(false);
+    const [isGrantActive, setIsGrantActive] = useState(true);
     const swipeableRef = useRef(null);
     const { user: currentUser } = useAuth();
 
@@ -49,6 +50,44 @@ const NotificationItem = ({
         };
 
         checkRequestExists();
+    }, [item?.id, item?.type, item?.data]);
+
+    // Check if profile access grant is still active (for access granted types)
+    useEffect(() => {
+        const checkGrantActive = async () => {
+            if (item?.type === 'profile_access_granted') {
+                try {
+                    const data = JSON.parse(item?.data);
+                    if (data?.grantId) {
+                        const { data: grant, error } = await supabase
+                            .from('profile_access_grants')
+                            .select('id, isused, expiresat')
+                            .eq('id', data.grantId)
+                            .maybeSingle();
+
+                        if (!grant || error || grant.isused) {
+                            setIsGrantActive(false);
+                        } else {
+                            // Check expiration
+                            const now = new Date();
+                            const expiresAt = new Date(grant.expiresat);
+                            if (now > expiresAt) {
+                                setIsGrantActive(false);
+                            } else {
+                                setIsGrantActive(true);
+                            }
+                        }
+                    } else {
+                        setIsGrantActive(false);
+                    }
+                } catch (error) {
+                    console.log('Error checking grant status:', error);
+                    setIsGrantActive(false);
+                }
+            }
+        };
+
+        checkGrantActive();
     }, [item?.id, item?.type, item?.data]);
 
     const handleClick = () => {
@@ -325,10 +364,13 @@ const NotificationItem = ({
              </View>
            ) : isAccessGranted ? (
             <TouchableOpacity 
-              style={styles.viewBtn}
+              style={isGrantActive ? styles.viewBtn : styles.disabledViewBtn}
               onPress={handleClick}
+              disabled={!isGrantActive}
             >
-              <Text style={styles.viewBtnText}>View</Text>
+              <Text style={isGrantActive ? styles.viewBtnText : styles.disabledViewText}>
+                {isGrantActive ? 'View' : 'Used'}
+              </Text>
             </TouchableOpacity>
           ) : (
             <Text style={[styles.text, {color: theme.colors.textLight}]}>
@@ -429,6 +471,23 @@ deleteAction: {
   paddingHorizontal: 20,
   borderRadius: theme.radius.xxl,
   borderCurve: 'continuous',
+},
+
+disabledViewBtn: {
+  backgroundColor: theme.colors.gray,
+  paddingHorizontal: 16,
+  paddingVertical: 8,
+  borderRadius: 20,
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: 'rgba(255, 255, 255, 0.05)',
+},
+
+disabledViewText: {
+  color: theme.colors.textLight,
+  fontSize: hp(1.5),
+  fontWeight: theme.fonts.semibold,
 }
 
 })

@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { theme } from '../../constants/theme';
 import { hp, wp } from '../../helpers/common';
 import ScreenWrapper from '../../components/ScreenWrapper'
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigation } from 'expo-router';
 import NotificationItem from '../../components/NotificationItem';
 import Header from '../../components/Header'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -18,10 +18,17 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const {user} = useAuth();
   const router = useRouter();
+  const navigation = useNavigation();
 
   useEffect(() => {
     getNotifications();
-  }, []);
+
+    const unsubscribe = navigation.addListener('focus', () => {
+      getNotifications();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getNotifications = async () => {
     try {
