@@ -142,7 +142,6 @@ const onSubmit = async() => {
           <Avatar
             uri={user?.image}
             size={hp(6.5)}
-            rounded={theme.radius.xl}
           />
           <View style={{gap: 2}}>
             <Text style={styles.username}>

@@ -171,8 +171,7 @@ avatarContainer: {
 avatar: {
   width: '100%',
   height: '100%',
-  borderRadius: theme.radius.xxl * 1.8,
-  borderCurve: 'continuous',
+  borderRadius: hp(14) / 2,
   borderWidth: 1,
   borderColor: theme.colors.darkLight,
 },

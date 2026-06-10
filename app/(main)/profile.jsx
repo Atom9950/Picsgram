@@ -173,7 +173,6 @@ const UserHeader = ({user, router, handleLogout}) => {
                         <Avatar
                             uri={user?.image}
                             size={hp(12)}
-                            rounded={theme.radius.xxl*1.4}
                         />
                         <Pressable style={styles.editIcon} onPress={() => router.push ('editProfile')}>
                             <Icon name="edit" size={16} color={theme.colors.text}/>

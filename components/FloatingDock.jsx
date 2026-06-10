@@ -47,7 +47,7 @@ const FloatingDock = ({
         onPress={() => router.push('profile')}
         style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
       >
-        <Avatar uri={user?.image} size={34} rounded={theme.radius.xs} />
+        <Avatar uri={user?.image} size={34} />
       </Pressable>
 
     </BlurView>

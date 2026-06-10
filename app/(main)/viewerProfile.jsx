@@ -239,7 +239,6 @@ const UserHeader = ({ user, router, isGrantedAccess, onBackPress }) => {
                         <Avatar
                             uri={user?.image}
                             size={hp(12)}
-                            rounded={theme.radius.xxl * 1.4}
                         />
                     </View>
 
